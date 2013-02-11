@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Autoflox"
+            id="com.plugin.autoflox">
+      </category>
+      <view
+            name="Autoflox"
+            icon="icons/sample.gif"
+            category="com.plugin.autoflox"
+            class="com.plugin.autoflox.views.AutofloxView"
+            id="com.plugin.autoflox.views.AutofloxView">
+      </view>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="right"
+               id="com.plugin.autoflox.views.AutofloxView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="AutoFlox"
+            visible="true"
+            id="com.plugin.autoflox.action.actionSet">
+         <menu
+               label="AutoFlox"
+               id="autofloxMenu">
+            <separator
+                  name="autofloxGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Run Autoflox"
+               icon="icons/sample.gif"
+               class="com.plugin.autoflox.action.AutofloxAction"
+               tooltip="Run Autoflox"
+               menubarPath="autofloxMenu/autofloxGroup"
+               toolbarPath="autofloxGroup"
+               id="com.plugin.autoflox.action.AutofloxAction">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
