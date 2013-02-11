@@ -16,6 +16,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -95,9 +96,11 @@ public class AutofloxView extends ViewPart {
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-
-		// Add a table
+		
+		// Result table
 		resultTable = viewer.getTable();
+		resultTable.setLocation(0, 0);
+		resultTable.setSize(parent.getSize().x, parent.getSize().y);
 		resultTable.setLinesVisible(true);
 		resultTable.setHeaderVisible(true);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -115,20 +118,12 @@ public class AutofloxView extends ViewPart {
 		      });
 
 		// Init titles
-		String[] titles = { "File", "Function Name", "Line NO." };
+		String[] titles = { " Time ", " Line # ", " File Path " };
 
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(resultTable, SWT.NONE);
 			column.setText(titles[i]);
 		}
-
-//		int count = 12;
-//		for (int i = 0; i < count; i++) {
-//			TableItem item = new TableItem(resultTable, SWT.NONE);
-//			item.setText(0, "x");
-//			item.setText(1, "y");
-//			item.setText(2, "!");
-//		}
 
 		for (int i = 0; i < titles.length; i++) {
 			resultTable.getColumn(i).pack();

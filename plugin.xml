@@ -10,7 +10,7 @@
       </category>
       <view
             name="Autoflox"
-            icon="icons/sample.gif"
+            icon="icons/console.png"
             category="com.plugin.autoflox"
             class="com.plugin.autoflox.views.AutofloxView"
             id="com.plugin.autoflox.views.AutofloxView">
@@ -52,24 +52,24 @@
             </separator>
          </menu>
          
+          <action
+               label="&amp;Stop Autoflox"
+               icon="icons/stop.png"
+               class="com.plugin.autoflox.action.AutofloxStopAction"
+               tooltip="Stop Autofflox"
+               menubarPath="autofloxMenu/autofloxGroup"
+               toolbarPath="autofloxGroup"
+               id="com.plugin.autoflox.action.AutofloxStopAction">
+         </action>
+         
          <action
                label="&amp;Run Autoflox"
-               icon="icons/sample.gif"
+               icon="icons/play.png"
                class="com.plugin.autoflox.action.AutofloxRunAction"
                tooltip="Run Autoflox"
                menubarPath="autofloxMenu/autofloxGroup"
                toolbarPath="autofloxGroup"
                id="com.plugin.autoflox.action.AutofloxRunAction">
-         </action>
-         
-          <action
-               label="&amp;Stop Autoflox"
-               icon="icons/sample.gif"
-               class="com.plugin.autoflox.action.AutofloxAction"
-               tooltip="Stop Autofflox"
-               menubarPath="autofloxMenu/autofloxGroup"
-               toolbarPath="autofloxGroup"
-               id="com.plugin.autoflox.action.AutofloxAction">
          </action>
          
       </actionSet>

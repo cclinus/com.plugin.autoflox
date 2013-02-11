@@ -20,7 +20,7 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 	public static String proxyFolderPath;
 	public static String sbinFolderPath;
 	public static String instrumentedFolderPath;
-
+	
 	/**
 	 * The constructor.
 	 */
@@ -73,7 +73,7 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 			
 			try {
 				AutofloxService.initFolderStruc(projectPath, proxyFolderPath, sbinFolderPath);
-				Runtime.getRuntime().exec(
+				AutofloxProcessManager.cmdProcess = Runtime.getRuntime().exec(
 						"java -jar " + sbinFolderPath + "autoflox-cmd.jar "
 								+ projectPath + " " + proxyFolderPath); // /home/cclinus/workspace/autoflox-cmd.jar
 			} catch (IOException e) {

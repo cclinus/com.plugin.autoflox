@@ -40,7 +40,7 @@ public class AutofloxRunner {
 		proxyBinFolderPath = proxyFolderPath + "/bin/";
 		dumpFilePath = proxyBinFolderPath + "/dump_data";
 		proxyJsOutputFolderPath = proxyFolderPath + "/jsSource/";
-
+		
 		modifyJsToolFiles();
 		
 		File sourceFolderFile = new File(sourceFolderPath);
