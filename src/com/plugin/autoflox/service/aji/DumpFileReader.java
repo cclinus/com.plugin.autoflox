@@ -11,15 +11,15 @@ public class DumpFileReader {
 
 	private String dumpFilePath;
 
-//	public static void main(String[] args) {
-//		DumpFileReader dReader = new DumpFileReader(
-//				"/home/cclinus/workspace/proxy/instrumented/dump_data");
-//		try {
-//			System.out.println(dReader.readDumpFile());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public static void main(String[] args) {
+		DumpFileReader dReader = new DumpFileReader(
+				"/home/cclinus/workspace/proxy/instrumented/dump_data");
+		try {
+			System.out.println(dReader.readDumpFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public DumpFileReader(String dumpFilePath) {
 		this.dumpFilePath = dumpFilePath;

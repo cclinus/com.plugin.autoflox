@@ -25,35 +25,34 @@ public class AutofloxRunner {
 
 	/**
 	 * @param 1: js source folder where all js and html files are located:
-	 *        sourceFolderPath(projectFolderPath) 
-	 *        2: proxyFolderPath
+	 *        sourceFolderPath(projectFolderPath) 2: proxyFolderPath
 	 * 
 	 * @throws IOException
-	 * @throws SAXException 
+	 * @throws SAXException
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 
-		sourceFolderPath = args[0]; //"/home/cclinus/runtime-EclipseApplication/webTest/";//
-		proxyFolderPath = args[1]; //"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
-		
-		proxyInstrumentedFolderPath = proxyFolderPath + "/instrumented/";	
+		sourceFolderPath = args[0]; // "/home/cclinus/runtime-EclipseApplication/webTest/";//
+		proxyFolderPath = args[1]; // "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
+
+		proxyInstrumentedFolderPath = proxyFolderPath + "/instrumented/";
 		proxyBinFolderPath = proxyFolderPath + "/bin/";
 		dumpFilePath = proxyBinFolderPath + "/dump_data";
 		proxyJsOutputFolderPath = proxyFolderPath + "/jsSource/";
-		
+
 		modifyJsToolFiles();
-		
+
 		File sourceFolderFile = new File(sourceFolderPath);
 		traverseAndInstrument(sourceFolderFile, sourceFolderPath,
 				proxyInstrumentedFolderPath);
 
 		// Start a thread that read and clean dump_file
 		new DumpFileThread(dumpFilePath).start();
-
 	}
 
 	public static void traverseAndInstrument(File node,
-			String sourceFolderPath, String proxyFolderPath) throws IOException, SAXException {
+			String sourceFolderPath, String proxyFolderPath)
+			throws IOException, SAXException {
 
 		if (node.isFile()) {
 			System.out.println(node.getAbsolutePath());
@@ -73,7 +72,8 @@ public class AutofloxRunner {
 	}
 
 	public static void initInstrumentation(String sourceFilePath,
-			String sourceFolderPath, String proxyFolderPath) throws IOException, SAXException {
+			String sourceFolderPath, String proxyFolderPath)
+			throws IOException, SAXException {
 		// Instrumentation
 		JSASTModifierWrapper modifierWrapper = new JSASTModifierWrapper(
 				new AstInstrumenter());
@@ -82,16 +82,16 @@ public class AutofloxRunner {
 		String relativePath = AutofloxService.stringDiff(sourceFolderPath,
 				sourceFilePath);
 		String destPath = proxyFolderPath + relativePath;
-		
+
 		// Make dirs
 		File destFile = new File(destPath);
 		destFile.mkdirs();
 
 		modifierWrapper.startInstrumentation(sourceFilePath, destPath);
 	}
-	
+
 	// Modify addVariable.js call path of receiveData.php
-	public static void modifyJsToolFiles() throws IOException{
+	public static void modifyJsToolFiles() throws IOException {
 		// For addvariable.js
 		String addVarFilePath = proxyBinFolderPath + "/addvariable.js";
 		String addVarContent;
@@ -100,36 +100,41 @@ public class AutofloxRunner {
 			FileInputStream inputStream = new FileInputStream(addVarFilePath);
 			try {
 				addVarContent = IOUtils.toString(inputStream);
-				addVarContent = addVarContent.replace("receiveData.php", "/autoflox_proxy/bin/receiveData.php");
+				addVarContent = addVarContent.replace("receiveData.php",
+						"/autoflox_proxy/bin/receiveData.php");
 			} finally {
 				inputStream.close();
 			}
 			FileWriter fstream = new FileWriter(addVarFilePath);
-			  BufferedWriter out = new BufferedWriter(fstream);
-			  out.write(addVarContent);
-			  //Close the output stream
-			  out.close();  
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(addVarContent);
+			// Close the output stream
+			out.close();
 		}
-		
+
 		// For addvariable_noAsync.js
-		String addVarNoAsyFilePath = proxyBinFolderPath + "/addvariable_noAsync.js";
+		String addVarNoAsyFilePath = proxyBinFolderPath
+				+ "/addvariable_noAsync.js";
 		String addVarNoAsyContent;
 		File addVarNoAsyFile = new File(addVarNoAsyFilePath);
 		if (addVarNoAsyFile.exists()) {
-			FileInputStream inputStream = new FileInputStream(addVarNoAsyFilePath);
+			FileInputStream inputStream = new FileInputStream(
+					addVarNoAsyFilePath);
 			try {
 				addVarNoAsyContent = IOUtils.toString(inputStream);
-				addVarNoAsyContent = addVarNoAsyContent.replace("receiveData.php", "/autoflox_proxy/bin/receiveData.php");
+				addVarNoAsyContent = addVarNoAsyContent.replace(
+						"receiveData.php",
+						"/autoflox_proxy/bin/receiveData.php");
 			} finally {
 				inputStream.close();
 			}
 			FileWriter fstream = new FileWriter(addVarNoAsyFilePath);
-			  BufferedWriter out = new BufferedWriter(fstream);
-			  out.write(addVarNoAsyContent);
-			  //Close the output stream
-			  out.close();  
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(addVarNoAsyContent);
+			// Close the output stream
+			out.close();
 		}
-		
+
 	}
 
 }

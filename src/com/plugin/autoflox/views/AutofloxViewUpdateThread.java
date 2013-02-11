@@ -17,9 +17,15 @@ import com.plugin.autoflox.action.AutofloxRunAction;
 public class AutofloxViewUpdateThread extends Thread {
 
 	private static String RESULT_FILE_PATH = AutofloxRunAction.workspacePath + "/autoflox_proxy/bin/tableResult";
+	public static boolean running = true;
+	
+	public static void terminate(){
+		running = false;
+	}
 
 	public void run() {
-		while (true) {
+		running = true;
+		while (running) {
 			// Check if the file exists
 			File file = new File(RESULT_FILE_PATH);
 			if (file.exists()) {
@@ -54,10 +60,17 @@ public class AutofloxViewUpdateThread extends Thread {
 				}
 			}
 		}
+		
+		System.out.println("AutofloxViewUpdateThread terminated");
 
 	}
 
 	private static void updateViewTable(final String itemContent) {
+		
+		//itemContent is the format: 
+		// PathToFile:::FunctionName:::Type+LineNo
+		final String[] itemColums = itemContent.split(":::");
+		
 		Display display = Display.getCurrent();
 		// may be null if outside the UI thread
 		if (display == null)
@@ -68,9 +81,9 @@ public class AutofloxViewUpdateThread extends Thread {
 				System.out.println("Add new item to table");
 				TableItem item = new TableItem(AutofloxView.resultTable,
 						SWT.NONE);
-				item.setText(0, itemContent);
-				item.setText(1, "..");
-				item.setText(2, "..");
+				item.setText(0, itemColums[2]);
+				item.setText(1, itemColums[1]);
+				item.setText(2, itemColums[0]);
 			}
 		});
 	}

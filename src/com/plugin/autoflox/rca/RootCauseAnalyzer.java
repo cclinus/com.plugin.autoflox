@@ -326,7 +326,11 @@ public class RootCauseAnalyzer {
 			// item.setText(1, gebidLineFt.f_decl.f_name);
 			// item.setText(2, gebidLineFt.f_decl.ppt_decl);
 
-			outputTableItem(gebidLineFt.f_decl.ppt_decl);
+			String funcName = gebidLineFt.f_decl.f_name;
+			String pptDecl = gebidLineFt.f_decl.ppt_decl;
+			
+			String combinedOutput = pptDecl.replace("."+funcName, ":::"+funcName+":::"); 
+			outputTableItem(combinedOutput);
 			
 			return true;
 			

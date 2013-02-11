@@ -5,6 +5,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import com.plugin.autoflox.views.AutofloxView;
+import com.plugin.autoflox.views.AutofloxViewUpdateThread;
+
 public class AutofloxStopAction implements IWorkbenchWindowActionDelegate {
 	private static IWorkbenchWindow window;
 	public static String workspacePath;
@@ -24,7 +27,13 @@ public class AutofloxStopAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		System.out.println("Autoflox stops ");
 		if (AutofloxProcessManager.cmdProcess != null) {
+			// Terminate cmd process
 			AutofloxProcessManager.cmdProcess.destroy();
+			AutofloxProcessManager.cmdProcess = null;
+			// Terminate AutofloxViewUpdateThread
+			AutofloxViewUpdateThread.terminate();
+			// Clean console
+			AutofloxView.cleanConsole();
 		}
 	}
 

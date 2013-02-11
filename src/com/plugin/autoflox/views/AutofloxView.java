@@ -2,23 +2,24 @@ package com.plugin.autoflox.views;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
@@ -96,8 +97,8 @@ public class AutofloxView extends ViewPart {
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-		
-		// Result table
+
+		// SWT table in console view to show result
 		resultTable = viewer.getTable();
 		resultTable.setLocation(0, 0);
 		resultTable.setSize(parent.getSize().x, parent.getSize().y);
@@ -105,49 +106,25 @@ public class AutofloxView extends ViewPart {
 		resultTable.setHeaderVisible(true);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		resultTable.setLayoutData(data);
-		
-		resultTable.addListener(SWT.Selection, new Listener() {
-		      public void handleEvent(Event e) {
-		          try {
-					goToLine(7);
-				} catch (BadLocationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-		        }
-		      });
 
 		// Init titles
-		String[] titles = { " Time ", " Line # ", " File Path " };
+		String[] titles = { " Line # ", " Function Name ", " File Path " };
 
-		for (int i = 0; i < titles.length; i++) {
-			TableColumn column = new TableColumn(resultTable, SWT.NONE);
-			column.setText(titles[i]);
-		}
+		// line # column
+		TableColumn LineNoColumn = new TableColumn(resultTable, SWT.NONE);
+		LineNoColumn.setText(titles[0]);
+		LineNoColumn.setWidth(150);
 
-		for (int i = 0; i < titles.length; i++) {
-			resultTable.getColumn(i).pack();
-		}
+		// func name column
+		TableColumn funcNameColumn = new TableColumn(resultTable, SWT.NONE);
+		funcNameColumn.setText(titles[1]);
+		funcNameColumn.setWidth(200);
 
-	}
+		// func name column
+		TableColumn filePathColumn = new TableColumn(resultTable, SWT.NONE);
+		filePathColumn.setText(titles[2]);
+		filePathColumn.setWidth(500);
 
-	public static void printToConsole() {
-		Link link = new Link(parent, SWT.NONE);
-		String message = "<a>This is a link</a>";
-		link.setText(message);
-		link.setSize(400, 100);
-
-		link.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				System.out.println("You have selected: " + event.text);
-
-				try {
-					goToLine(3);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
-			}
-		});
 	}
 
 	public static IEditorPart getEditor() {
@@ -207,4 +184,9 @@ public class AutofloxView extends ViewPart {
 	public void setFocus() {
 		// viewer.getControl().setFocus();
 	}
+	
+	public static void cleanConsole(){
+		resultTable.removeAll();
+	}
+
 }
