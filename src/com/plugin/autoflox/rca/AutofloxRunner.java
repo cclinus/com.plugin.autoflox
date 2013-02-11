@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.xml.sax.SAXException;
 
 import com.plugin.autoflox.service.AutofloxService;
 import com.plugin.autoflox.service.aji.DumpFileThread;
@@ -28,11 +29,12 @@ public class AutofloxRunner {
 	 *        2: proxyFolderPath
 	 * 
 	 * @throws IOException
+	 * @throws SAXException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, SAXException {
 
-		sourceFolderPath = args[0]; //"/home/cclinus/runtime-EclipseApplication/webTest/";
-		proxyFolderPath = args[1]; //"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";
+		sourceFolderPath = args[0]; //"/home/cclinus/runtime-EclipseApplication/webTest/";//
+		proxyFolderPath = args[1]; //"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
 		
 		proxyInstrumentedFolderPath = proxyFolderPath + "/instrumented/";	
 		proxyBinFolderPath = proxyFolderPath + "/bin/";
@@ -51,7 +53,7 @@ public class AutofloxRunner {
 	}
 
 	public static void traverseAndInstrument(File node,
-			String sourceFolderPath, String proxyFolderPath) throws IOException {
+			String sourceFolderPath, String proxyFolderPath) throws IOException, SAXException {
 
 		if (node.isFile()) {
 			System.out.println(node.getAbsolutePath());
@@ -71,19 +73,11 @@ public class AutofloxRunner {
 	}
 
 	public static void initInstrumentation(String sourceFilePath,
-			String sourceFolderPath, String proxyFolderPath) throws IOException {
+			String sourceFolderPath, String proxyFolderPath) throws IOException, SAXException {
 		// Instrumentation
 		JSASTModifierWrapper modifierWrapper = new JSASTModifierWrapper(
 				new AstInstrumenter());
 		modifierWrapper.setInstrumentAsyncs(false);
-
-		String jsCode;
-		FileInputStream inputStream = new FileInputStream(sourceFilePath);
-		try {
-			jsCode = IOUtils.toString(inputStream);
-		} finally {
-			inputStream.close();
-		}
 
 		String relativePath = AutofloxService.stringDiff(sourceFolderPath,
 				sourceFilePath);
@@ -93,7 +87,7 @@ public class AutofloxRunner {
 		File destFile = new File(destPath);
 		destFile.mkdirs();
 
-		modifierWrapper.startInstrumentation(jsCode, destPath);
+		modifierWrapper.startInstrumentation(sourceFilePath, destPath);
 	}
 	
 	// Modify addVariable.js call path of receiveData.php

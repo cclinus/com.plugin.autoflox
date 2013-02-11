@@ -2,16 +2,31 @@ package com.plugin.autoflox.service.aji;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ast.AstRoot;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.plugin.autoflox.rca.AutofloxRunner;
 
@@ -24,7 +39,6 @@ public class JSASTModifierWrapper {
 	public static String jsSourceOutputFolder = AutofloxRunner.proxyJsOutputFolderPath;
 
 	public JSASTModifierWrapper(JSASTModifier modify) {
-		// excludeFilenamePatterns = new ArrayList<String>();
 		modifier = modify;
 	}
 
@@ -34,77 +48,69 @@ public class JSASTModifierWrapper {
 	}
 
 	/*
-	 *  Take sourceContent which is the actual code, instrument it and save to scopeName(file path)
+	 * Take sourceContent which is the actual code, instrument it and save to
+	 * scopeName(file path)
 	 */
-	public void startInstrumentation(String sourceContent, String scopeName)
-			throws FileNotFoundException {
-		
-		// TODO: Handle html case later
-		String instrumentedCode = modifyJS(sourceContent, scopeName);
-		//System.out.println(instrumentedCode);
+	public void startInstrumentation(String sourceFilePath, String scopeName)
+			throws IOException, SAXException {
 
-		// Generate the real instrumented code, scopeName is the js file name
+		String instrumentedCode = null;
+
+		String jsCode;
+
+		// FIXME Find a better way to detect html and js files
+		if (scopeName.contains(".html") || scopeName.contains(".php")) {
+			
+			System.out.println("HTML detected");
+			
+			htmlFound = true;
+			// Parse html node and get script node
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder builder = null;
+
+			try {
+				builder = builderFactory.newDocumentBuilder();
+				FileInputStream inputStream = new FileInputStream(
+						sourceFilePath);
+				Document document = builder.parse(inputStream);
+				inputStream.close();
+				NodeList rootElement = document.getElementsByTagName("script");
+
+				// Traverse script tag list
+				for (int i = 0; i < rootElement.getLength(); i++) {
+
+					Node jsNode = rootElement.item(i);
+					String nodeString = jsNode.getTextContent();
+
+					if ( nodeString.length() > 0 ) {
+						// Make some change on each content of script tag
+						nodeString = modifyJS(nodeString, scopeName);
+						jsNode.setTextContent(nodeString);
+					}
+
+					instrumentedCode = convertDomToString(document);
+					
+					// System.out.println(nodeString);
+				}
+
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			}
+
+		} else if(scopeName.contains(".js")){
+			
+			System.out.println("Javascript detected");
+			
+			FileInputStream inputStream = new FileInputStream(sourceFilePath);
+			jsCode = IOUtils.toString(inputStream);
+			inputStream.close();
+			// If it is javascript file
+			instrumentedCode = modifyJS(jsCode, scopeName);
+		}
+
+		// Generate the instrumented code, scopeName is the file name
 		writeTextFile(scopeName, instrumentedCode);
-
-		// Deal with html code
-		// htmlFound = true;
-		// try {
-		// DocumentBuilderFactory factory = DocumentBuilderFactory
-		// .newInstance();
-		// DocumentBuilder builder = factory.newDocumentBuilder();
-		// Document dom = builder.parse(new InputSource(new StringReader(
-		// sourceContent)));
-		//
-		// /* find script nodes in the html */
-		// NodeList nodes = dom.getElementsByTagName("script");
-		//
-		// for (int i = 0; i < nodes.getLength(); i++) {
-		// Node nType = nodes.item(i).getAttributes().getNamedItem("type");
-		// /* instrument if this is a JavaScript node */
-		// if ((nType != null && nType.getTextContent() != null && nType
-		// .getTextContent().toLowerCase().contains("javascript"))) {
-		// String content = nodes.item(i).getTextContent();
-		// System.out.println(content.length());
-		// if (content.length() > 0) {
-		// String js = modifyJS(content, scopeName + "script" + i);
-		// nodes.item(i).setTextContent(js);
-		// System.out.println(js);
-		// continue;
-		// }
-		// }
-		//
-		// /* also check for the less used language="javascript" type tag */
-		// nType = nodes.item(i).getAttributes().getNamedItem("language");
-		// if ((nType != null && nType.getTextContent() != null && nType
-		// .getTextContent().toLowerCase().contains("javascript"))) {
-		//
-		// System.out.println("javascript tag found");
-		//
-		// String content = nodes.item(i).getTextContent();
-		// if (content.length() > 0) {
-		// String js = modifyJS(content, scopeName + "script" + i);
-		// nodes.item(i).setTextContent(js);
-		// }
-		//
-		// }
-		// }
-		// /* only modify content when we did modify anything */
-		// if (nodes.getLength() > 0) {
-		// /* set the new content */
-		//
-		// // Convert dom to string
-		// DOMSource domSource = new DOMSource(dom);
-		// StringWriter writer = new StringWriter();
-		// StreamResult result = new StreamResult(writer);
-		// TransformerFactory tf = TransformerFactory.newInstance();
-		// Transformer transformer = tf.newTransformer();
-		// transformer.transform(domSource, result);
-		//
-		// System.out.println(writer.toString());
-		// }
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
 
 	}
 
@@ -127,14 +133,10 @@ public class JSASTModifierWrapper {
 
 			/* initialize JavaScript context */
 			Context cx = Context.enter();
-			// cx.setErrorReporter(new ConsoleErrorReporter());
 
 			/* create a new parser */
-			// CompilerEnvirons ce = new CompilerEnvirons();
-			// ce.setErrorReporter(new ConsoleErrorReporter());
 			Parser rhinoParser = new Parser(new CompilerEnvirons(),
 					cx.getErrorReporter());
-			// Parser rhinoParser = new Parser(ce, cx.getErrorReporter());
 
 			/* parse some script and save it in AST */
 			ast = rhinoParser.parse(new String(input), scopename, 0);
@@ -245,13 +247,13 @@ public class JSASTModifierWrapper {
 		try {
 			File f = new File(fileName);
 			f.delete();
-			
+
 			FileWriter fstream = new FileWriter(fileName);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(s);
-			
-			System.out.println("Instrumented to "+ fileName);
-			
+
+			System.out.println("Instrumented to " + fileName);
+
 			// Close the output stream
 			out.close();
 		} catch (Exception e) {// Catch exception if any
@@ -259,4 +261,22 @@ public class JSASTModifierWrapper {
 		}
 
 	}
+	
+	public static String convertDomToString(Document doc) {
+	    try {
+	        StringWriter sw = new StringWriter();
+	        TransformerFactory tf = TransformerFactory.newInstance();
+	        Transformer transformer = tf.newTransformer();
+	        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+	        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+	        transformer.transform(new DOMSource(doc), new StreamResult(sw));
+	        return sw.toString();
+	    } catch (Exception ex) {
+	        throw new RuntimeException("Error converting to String", ex);
+	    }
+	}
+
 }

@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -14,7 +12,7 @@ import com.plugin.autoflox.service.AutofloxService;
 import com.plugin.autoflox.views.AutofloxView;
 import com.plugin.autoflox.views.AutofloxViewUpdateThread;
 
-public class AutofloxAction implements IWorkbenchWindowActionDelegate {
+public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 	private static IWorkbenchWindow window;
 	public static String workspacePath;
 	public static String currentOpenedFilePath;
@@ -26,7 +24,7 @@ public class AutofloxAction implements IWorkbenchWindowActionDelegate {
 	/**
 	 * The constructor.
 	 */
-	public AutofloxAction() {
+	public AutofloxRunAction() {
 	}
 
 	/**

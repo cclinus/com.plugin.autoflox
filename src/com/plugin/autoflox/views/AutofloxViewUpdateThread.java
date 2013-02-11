@@ -12,11 +12,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.plugin.autoflox.action.AutofloxAction;
+import com.plugin.autoflox.action.AutofloxRunAction;
 
 public class AutofloxViewUpdateThread extends Thread {
 
-	private static String RESULT_FILE_PATH = AutofloxAction.workspacePath + "/autoflox_proxy/bin/tableResult";
+	private static String RESULT_FILE_PATH = AutofloxRunAction.workspacePath + "/autoflox_proxy/bin/tableResult";
 
 	public void run() {
 		while (true) {

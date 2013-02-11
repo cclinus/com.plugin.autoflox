@@ -38,10 +38,12 @@
    
    <extension
          point="org.eclipse.ui.actionSets">
+         
       <actionSet
             label="AutoFlox"
             visible="true"
             id="com.plugin.autoflox.action.actionSet">
+            
          <menu
                label="AutoFlox"
                id="autofloxMenu">
@@ -49,16 +51,29 @@
                   name="autofloxGroup">
             </separator>
          </menu>
+         
          <action
                label="&amp;Run Autoflox"
                icon="icons/sample.gif"
-               class="com.plugin.autoflox.action.AutofloxAction"
+               class="com.plugin.autoflox.action.AutofloxRunAction"
                tooltip="Run Autoflox"
+               menubarPath="autofloxMenu/autofloxGroup"
+               toolbarPath="autofloxGroup"
+               id="com.plugin.autoflox.action.AutofloxRunAction">
+         </action>
+         
+          <action
+               label="&amp;Stop Autoflox"
+               icon="icons/sample.gif"
+               class="com.plugin.autoflox.action.AutofloxAction"
+               tooltip="Stop Autofflox"
                menubarPath="autofloxMenu/autofloxGroup"
                toolbarPath="autofloxGroup"
                id="com.plugin.autoflox.action.AutofloxAction">
          </action>
+         
       </actionSet>
+      
    </extension>
 
 </plugin>
