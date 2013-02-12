@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -13,11 +15,13 @@ import com.plugin.autoflox.views.AutofloxView;
 import com.plugin.autoflox.views.AutofloxViewUpdateThread;
 
 public class AutofloxAction implements IWorkbenchWindowActionDelegate {
-	private IWorkbenchWindow window;
+	private static IWorkbenchWindow window;
 	public static String workspacePath;
 	public static String currentOpenedFilePath;
 	public static String projectPath;
+	public static String proxyFolderPath;
 	public static String sbinFolderPath;
+	public static String instrumentedFolderPath;
 
 	/**
 	 * The constructor.
@@ -33,39 +37,63 @@ public class AutofloxAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void run(IAction action) {
 		System.out.println("Autoflox runs ");
+		boolean pathCheckFlag = false;
+		try {
+			// Get workspace path
+			workspacePath = AutofloxView.getWorkspacePath();
+			// Get current opened file path
+			currentOpenedFilePath = AutofloxView.getOpenedFilePath();
+			// Check if the opened file is in the workspace
+			pathCheckFlag = currentOpenedFilePath.contains(workspacePath);
+		} catch (NullPointerException e) {
+			System.out.println("No file is found.");
+			openDialog("AutoFlox", "No file is found.");
+			return;
+		}
+		
+		if (pathCheckFlag) {
 
-		// Get workspace path
-		workspacePath = AutofloxView.getWorkspacePath();
-		
-		// Get current opened file path
-		currentOpenedFilePath = AutofloxView.getOpenedFilePath();
-		
-		// Check if the opened file is in the workspace
-		if(currentOpenedFilePath.contains(workspacePath)){
 			// Get project folder
-			String parseProjectString = AutofloxService.stringDiff(workspacePath, currentOpenedFilePath);
-			
+			String parseProjectString = AutofloxService.stringDiff(
+					workspacePath, currentOpenedFilePath);
+
 			// Parse the project name
 			String[] temp;
 			temp = parseProjectString.split("/");
 			String projectName = temp[1];
-			
+
 			projectPath = workspacePath + "/" + projectName + "/";
 			System.out.println("Project path:" + projectPath);
-			
-			File checkPath = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+
+			File checkPath = new File(this.getClass().getProtectionDomain()
+					.getCodeSource().getLocation().getPath());
 			sbinFolderPath = checkPath + "/sbin/";
 			
+			proxyFolderPath = workspacePath	+ "/autoflox_proxy/";
+			instrumentedFolderPath = proxyFolderPath + "/instrumented/";
+
+			openDialog("AutoFlox", "AutoFlox runs. Please navigate your browser to the AutoFlox proxy at "+instrumentedFolderPath);
+			
 			try {
-				AutofloxService.initFolderStruc(projectPath, workspacePath+"/autoflox_proxy/", sbinFolderPath);
-				Runtime.getRuntime().exec("java -jar " + sbinFolderPath + "autoflox-cmd.jar " + projectPath + " " + workspacePath+"/autoflox_proxy/"); // /home/cclinus/workspace/autoflox-cmd.jar
+				AutofloxService.initFolderStruc(projectPath, proxyFolderPath, sbinFolderPath);
+				Runtime.getRuntime().exec(
+						"java -jar " + sbinFolderPath + "autoflox-cmd.jar "
+								+ projectPath + " " + proxyFolderPath); // /home/cclinus/workspace/autoflox-cmd.jar
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			new AutofloxViewUpdateThread().start();
 		}
-		
+
+	}
+
+	public static void openDialog(String title, String msg) {
+		MessageBox dialog = new MessageBox(window.getShell(), SWT.ICON_QUESTION
+				| SWT.OK | SWT.CANCEL);
+		dialog.setText(title);
+		dialog.setMessage(msg);
+		dialog.open();
 	}
 
 	/**

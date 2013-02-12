@@ -2,7 +2,7 @@ package com.plugin.autoflox.service.aji;
 
 import java.io.IOException;
 
-import com.plugin.autoflox.rca.AutoFloxRunner;
+import com.plugin.autoflox.rca.AutofloxRunner;
 import com.plugin.autoflox.rca.RCAPlugin;
 import com.plugin.autoflox.service.aji.executiontracer.JSExecutionTracer;
 
@@ -10,8 +10,8 @@ public class DumpFileThread extends Thread {
 
 	private DumpFileReader dReader;
 	private int stateCounter = 0;
-	public String executionTraceFolder = AutoFloxRunner.proxyFolderPath + "/trace/";
-	public static String jsSourceFolder = AutoFloxRunner.proxyFolderPath + "/jsSource/";
+	public String executionTraceFolder = AutofloxRunner.proxyFolderPath + "/trace/";
+	public static String jsSourceFolder = AutofloxRunner.proxyFolderPath + "/jsSource/";
 
 	public DumpFileThread(String dumpFilePath) {
 		DumpFileReader dReader = new DumpFileReader(dumpFilePath);

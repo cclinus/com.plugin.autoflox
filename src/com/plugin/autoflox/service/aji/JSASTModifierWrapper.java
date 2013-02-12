@@ -13,7 +13,7 @@ import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ast.AstRoot;
 
-import com.plugin.autoflox.rca.AutoFloxRunner;
+import com.plugin.autoflox.rca.AutofloxRunner;
 
 public class JSASTModifierWrapper {
 
@@ -21,7 +21,7 @@ public class JSASTModifierWrapper {
 	private int rootCounter = 0;
 	private boolean htmlFound = false;
 	private boolean instrumentAsyncs = true;
-	public static String jsSourceOutputFolder = AutoFloxRunner.proxyJsOutputFolderPath;
+	public static String jsSourceOutputFolder = AutofloxRunner.proxyJsOutputFolderPath;
 
 	public JSASTModifierWrapper(JSASTModifier modify) {
 		// excludeFilenamePatterns = new ArrayList<String>();

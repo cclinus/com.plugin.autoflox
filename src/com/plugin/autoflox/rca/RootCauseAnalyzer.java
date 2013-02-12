@@ -13,7 +13,7 @@ import com.plugin.autoflox.views.AutofloxView;
 
 public class RootCauseAnalyzer {
 	private static String JS_SOURCE_FOLDER;
-	private static String RESULT_FILE_PATH = AutoFloxRunner.proxyBinFolderPath + "/tableResult";
+	private static String RESULT_FILE_PATH = AutofloxRunner.proxyBinFolderPath + "/tableResult";
 
 	public static void main(String[] args) {
 		// DTraceReader d_trace = new DTraceReader();

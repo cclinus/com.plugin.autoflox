@@ -38,7 +38,7 @@ import org.mozilla.javascript.ast.FunctionNode;
 import org.mozilla.javascript.ast.Scope;
 import org.mozilla.javascript.ast.Symbol;
 
-import com.plugin.autoflox.rca.AutoFloxRunner;
+import com.plugin.autoflox.rca.AutofloxRunner;
 import com.plugin.autoflox.service.aji.JSASTModifier;
 
 /**
@@ -87,9 +87,9 @@ public class AstInstrumenter extends JSASTModifier {
 		String code;
 		
 		/*FROLIN: Diff. versions of addvariable.js*/
-		String instrumentationCode = AutoFloxRunner.proxyBinFolderPath + "addvariable.js";
+		String instrumentationCode = AutofloxRunner.proxyBinFolderPath + "addvariable.js";
 		if (!this.instrumentAsyncs) {
-			instrumentationCode = AutoFloxRunner.proxyBinFolderPath + "addvariable_noAsync.js";
+			instrumentationCode = AutofloxRunner.proxyBinFolderPath + "addvariable_noAsync.js";
 		}
 
 		File js = new File(instrumentationCode);
