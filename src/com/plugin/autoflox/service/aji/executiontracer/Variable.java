@@ -23,9 +23,6 @@ package com.plugin.autoflox.service.aji.executiontracer;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.crawljax.core.CrawljaxException;
-//import com.crawljax.util.Helper;
-
 /**
  * Representation of a Daikon variable.
  * 
@@ -66,7 +63,7 @@ public class Variable {
 	 *             When the type is unsupported.
 	 * @throws JSONException
 	 */
-	private String getValue(Object value) throws CrawljaxException, JSONException {
+	private String getValue(Object value) throws JSONException {
 		if (isArray() && value instanceof JSONArray) {
 			return getArray((JSONArray) value, type);
 		} else {
@@ -85,7 +82,7 @@ public class Variable {
 	 * @throws CrawljaxException
 	 *             When the type is unsupported.
 	 */
-	private String getValue(Object value, String type) throws CrawljaxException {
+	private String getValue(Object value, String type) {
 		if (value == null) {
 			return "null";
 		}
@@ -109,8 +106,8 @@ public class Variable {
 		} else if (type.equals("object")) {
 			return "\"" + value.toString() + "\"";
 		}
-
-		throw new CrawljaxException("Unhandled type when converting to trace file " + type);
+		
+		return null;
 	}
 
 	/**
@@ -125,7 +122,7 @@ public class Variable {
 	 *             When type is not supported.
 	 * @throws JSONException
 	 */
-	private String getArray(JSONArray array, String type) throws CrawljaxException, JSONException {
+	private String getArray(JSONArray array, String type) throws JSONException {
 		String result = "[";
 
 		for (int i = 0; i < array.length(); i++) {
@@ -144,7 +141,7 @@ public class Variable {
 	 * @throws CrawljaxException
 	 *             If type is unsupported.
 	 */
-	String getDeclaration() throws CrawljaxException {
+	String getDeclaration() {
 		StringBuffer varDecl = new StringBuffer();
 
 		if (isArray()) {
@@ -172,8 +169,6 @@ public class Variable {
 		} else if (type.equals("number")) {
 			/* number might be int or double. for now use double to be sure */
 			varDecl.append("double");
-		} else {
-			throw new CrawljaxException("Unhandled type: " + type);
 		}
 
 		if (isArray()) {
@@ -232,7 +227,7 @@ public class Variable {
 	 * @throws JSONException
 	 *             On error.
 	 */
-	public String getData(Object value) throws CrawljaxException, JSONException {
+	public String getData(Object value) throws JSONException {
 		/*FROLIN'S CODE*/
 		/*
 		if (value.toString().equals("undefined")) {

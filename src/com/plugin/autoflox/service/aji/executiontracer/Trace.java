@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.crawljax.core.CrawljaxException;
-
 /**
  * Representation of a Daikon trace file.
  * 
@@ -100,7 +98,7 @@ public class Trace {
 	 * @throws CrawljaxException
 	 *             When an unsupported type is found.
 	 */
-	public String getDeclaration() throws CrawljaxException {
+	public String getDeclaration() {
 		StringBuffer result = new StringBuffer();
 
 		result.append("decl-version 2.0\n");
@@ -123,7 +121,7 @@ public class Trace {
 	 * @throws JSONException
 	 *             On error.
 	 */
-	public String getData(JSONArray jsonObject) throws CrawljaxException, JSONException {
+	public String getData(JSONArray jsonObject) throws JSONException {
 		StringBuffer result = new StringBuffer();
 
 		for (int j = 0; j < jsonObject.length(); j++) {

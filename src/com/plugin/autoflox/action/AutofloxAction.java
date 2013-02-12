@@ -47,7 +47,6 @@ public class AutofloxAction implements IWorkbenchWindowActionDelegate {
 			pathCheckFlag = currentOpenedFilePath.contains(workspacePath);
 		} catch (NullPointerException e) {
 			System.out.println("No file is found.");
-			openDialog("AutoFlox", "No file is found.");
 			return;
 		}
 		
@@ -72,7 +71,7 @@ public class AutofloxAction implements IWorkbenchWindowActionDelegate {
 			proxyFolderPath = workspacePath	+ "/autoflox_proxy/";
 			instrumentedFolderPath = proxyFolderPath + "/instrumented/";
 
-			openDialog("AutoFlox", "AutoFlox runs. Please navigate your browser to the AutoFlox proxy at "+instrumentedFolderPath);
+			//openDialog("AutoFlox", "AutoFlox runs. Please navigate your browser to the AutoFlox proxy at "+instrumentedFolderPath);
 			
 			try {
 				AutofloxService.initFolderStruc(projectPath, proxyFolderPath, sbinFolderPath);
@@ -86,14 +85,6 @@ public class AutofloxAction implements IWorkbenchWindowActionDelegate {
 			new AutofloxViewUpdateThread().start();
 		}
 
-	}
-
-	public static void openDialog(String title, String msg) {
-		MessageBox dialog = new MessageBox(window.getShell(), SWT.ICON_QUESTION
-				| SWT.OK | SWT.CANCEL);
-		dialog.setText(title);
-		dialog.setMessage(msg);
-		dialog.open();
 	}
 
 	/**

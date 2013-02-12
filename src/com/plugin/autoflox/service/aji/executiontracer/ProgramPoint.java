@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.crawljax.core.CrawljaxException;
-
 /**
  * Representation of a Daikon program point.
  * 
@@ -127,7 +125,7 @@ public class ProgramPoint {
 	 * @throws CrawljaxException
 	 *             On undefined type.
 	 */
-	public String getDeclaration() throws CrawljaxException {
+	public String getDeclaration(){
 
 		StringBuffer varDecl = new StringBuffer();
 
@@ -170,7 +168,7 @@ public class ProgramPoint {
 	 * @throws JSONException
 	 *             On error.
 	 */
-	public String getData(String postfix, JSONArray data) throws CrawljaxException, JSONException {
+	public String getData(String postfix, JSONArray data) throws JSONException {
 		StringBuffer result = new StringBuffer();
 		boolean found = false;
 

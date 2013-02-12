@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/crawljax-2.0.jar"/>
 	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/daikon-custom-20100427.jar"/>
 	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/json-20080701.jar"/>
 	<classpathentry kind="lib" path="/home/cclinus/workspace/com.plugin.autoflox/sbin/rhino-20110629.jar"/>

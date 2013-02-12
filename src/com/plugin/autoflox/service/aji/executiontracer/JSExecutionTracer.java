@@ -34,11 +34,6 @@ import java.util.Vector;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.util.Helper;
-
 import daikon.Daikon;
 
 /**
@@ -70,21 +65,6 @@ public class JSExecutionTracer{
 	 */
 	public JSExecutionTracer(String filename) {
 		assertionFilename = filename;
-	}
-
-	/**
-	 * Initialize the plugin and create folders if needed.
-	 * 
-	 * @param browser
-	 *            The browser.
-	 */
-	public void preCrawling(EmbeddedBrowser browser) {
-		try {
-			Helper.directoryCheck(getOutputFolder());
-			Helper.directoryCheck(getOutputFolder() + EXECUTIONTRACEDIRECTORY);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -130,9 +110,6 @@ public class JSExecutionTracer{
 
 			points = new JSONArray();
 
-		} catch (CrawljaxException we) {
-			we.printStackTrace();
-			return;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -182,49 +159,6 @@ public class JSExecutionTracer{
 		return result;
 	}
 
-	public void postCrawling(CrawlSession session) {
-		try {
-			PrintStream output = new PrintStream(getOutputFolder()
-					+ getAssertionFilename());
-
-			/* save the current System.out for later usage */
-			PrintStream oldOut = System.out;
-			/* redirect it to the file */
-			System.setOut(output);
-
-			/* don't print all the useless stuff */
-			Daikon.dkconfig_quiet = true;
-			Daikon.noversion_output = true;
-
-			List<String> arguments = allTraceFiles();
-
-			/*
-			 * TODO: Frank, fix this hack (it is done because of Daikon calling
-			 * cleanup before init)
-			 */
-			arguments.add("-o");
-			arguments.add(getOutputFolder() + "daikon.inv.gz");
-			arguments.add("--format");
-			arguments.add("javascript");
-			arguments.add("--config_option");
-			arguments
-					.add("daikon.FileIO.unmatched_procedure_entries_quiet=true");
-			arguments.add("--config_option");
-			arguments.add("daikon.FileIO.ignore_missing_enter=true");
-
-			/* start daikon */
-			// Daikon.mainHelper(arguments.toArray(new String[0]));
-
-			/* Restore the old system.out */
-			System.setOut(oldOut);
-
-			/* close the output file */
-			output.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * @return Name of the assertion file.
@@ -234,7 +168,7 @@ public class JSExecutionTracer{
 	}
 
 	public static String getOutputFolder() {
-		return Helper.addFolderSlashIfNeeded(outputFolder);
+		return outputFolder;
 	}
 
 	public void setOutputFolder(String absolutePath) {
