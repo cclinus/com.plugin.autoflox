@@ -3,7 +3,7 @@ com.plugin.autoflox
 
 
 
--Overview: An Eclipse plugin for AutoFlox
+- Overview: An Eclipse plugin for AutoFlox
 
   AutoFlox is orginally developed by Frolin Ocariza, Karthik Pattabiraman and Ali Mesbah in 2011 as a Crawljax plugin. It is designed to localize JavaScript faults. 
 
@@ -15,7 +15,7 @@ com.plugin.autoflox
 
 
 
--How To
+- How To
 
   1. Assuming you are developing an web app with some JavaScript in Eclipse.
   2. Make the workspace of Eclipse a web host directory. 
@@ -27,7 +27,7 @@ com.plugin.autoflox
 
 
 
--Envirnment
+- Envirnment
   
   Although the plugin is designed for cross-platform uses, I only tested it in Unbuntu 12.04 with open-jre-6, Firefox 15.0.1
 
