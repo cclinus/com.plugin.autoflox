@@ -39,5 +39,4 @@ ENVIRONMENT
 VIDEO DEMO
 ----------
 
-  The video demos what I can so far, I will keep this link updated.
-  http://www.youtube.com/watch?v=rVCyWoJdacw&list=UUu2rRBCmShecHKmB-INAu-w&index=1
+  The [video](http://www.youtube.com/watch?v=rVCyWoJdacw&list=UUu2rRBCmShecHKmB-INAu-w&index=1) demos what I can so far, I will keep this link updated.
