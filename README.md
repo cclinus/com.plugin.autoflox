@@ -1,9 +1,9 @@
-com.plugin.autoflox
+An Eclipse plugin for AutoFlox
 ===================
 
 
 
-OVERVIEW: An Eclipse plugin for AutoFlox
+OVERVIEW
 ----------------------------------------
 
   AutoFlox is orginally developed by Frolin Ocariza, Karthik Pattabiraman and Ali Mesbah in 2011 as a Crawljax plugin. It is designed to localize JavaScript faults. 
