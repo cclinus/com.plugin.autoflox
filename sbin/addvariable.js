@@ -3,7 +3,7 @@ window.buffer = new Array();
 
 function send(value) {
 	window.buffer.push(value);
-	if(window.buffer.length == 200 || value.indexOf(":::ERROR") !== -1) {
+	if(window.buffer.length > 200 || value.indexOf(":::ERROR") !== -1) {
 		sendReally();	
 	}
 }

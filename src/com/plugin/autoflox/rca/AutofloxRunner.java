@@ -32,8 +32,8 @@ public class AutofloxRunner {
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 
-		sourceFolderPath = args[0]; // "/home/cclinus/runtime-EclipseApplication/webTest/";//
-		proxyFolderPath = args[1]; // "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
+		sourceFolderPath = "/home/cclinus/runtime-EclipseApplication/webTest/";//
+		proxyFolderPath = "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//args[1];
 
 		proxyInstrumentedFolderPath = proxyFolderPath + "/instrumented/";
 		proxyBinFolderPath = proxyFolderPath + "/bin/";

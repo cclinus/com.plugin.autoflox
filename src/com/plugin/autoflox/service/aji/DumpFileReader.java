@@ -13,7 +13,7 @@ public class DumpFileReader {
 
 	public static void main(String[] args) {
 		DumpFileReader dReader = new DumpFileReader(
-				"/home/cclinus/workspace/proxy/instrumented/dump_data");
+				"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/bin/dump_data");
 		try {
 			System.out.println(dReader.readDumpFile());
 		} catch (IOException e) {

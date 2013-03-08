@@ -20,6 +20,7 @@ public class DumpFileThread extends Thread {
 
 	public void run() {
 		while (true) {
+			System.out.println("Reading dumpData");
 			try {
 
 				// Read from dump file to point array
@@ -52,7 +53,7 @@ public class DumpFileThread extends Thread {
 			}
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
