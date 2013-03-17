@@ -6,7 +6,6 @@ import java.io.IOException;
 public class RCAPlugin{
 	private static String outputFolder;
 	private static String traceFolder;
-	
 	private static String jsSourceFolder;
 	
 	public RCAPlugin(String trace_folder) { 
@@ -20,7 +19,7 @@ public class RCAPlugin{
 		this.jsSourceFolder = jsFolder;
 	}
 	
-	public void rcaStart() throws IOException {
+	public void rcaStart(int errorIdCounter) throws IOException {
 		System.out.println("\n\n*****AutoFLox*******");
 		//Note: Attach a variable to the error trace containing the
 		//error message
@@ -76,7 +75,7 @@ public class RCAPlugin{
 					}
 					
 					//Find the direct DOM access
-					boolean GEBIDfound = rca.findGEBID(fullPath, initNullVar);
+					boolean GEBIDfound = rca.findGEBID(fullPath, initNullVar, errorIdCounter);
 					
 					if (GEBIDfound) {
 						System.out.println("Direct DOM access found!\n");

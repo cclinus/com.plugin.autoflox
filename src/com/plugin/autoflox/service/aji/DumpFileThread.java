@@ -19,6 +19,7 @@ public class DumpFileThread extends Thread {
 	}
 
 	public void run() {
+		int errorIdCounter = 0;
 		while (true) {
 			System.out.println("Reading dumpData");
 			try {
@@ -43,7 +44,8 @@ public class DumpFileThread extends Thread {
 						
 						// rca analysis
 						RCAPlugin rca = new RCAPlugin(executionTraceFolder+"executiontrace", jsSourceFolder);
-						rca.rcaStart();
+						rca.rcaStart(errorIdCounter);
+						errorIdCounter++;
 					}
 				}
 

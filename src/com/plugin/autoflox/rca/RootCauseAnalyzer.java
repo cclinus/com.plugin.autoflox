@@ -35,13 +35,10 @@ public class RootCauseAnalyzer {
 		// testWordPress();
 		// testTumblr();
 		// System.out.println(findErrorMsg("/new_jsassertions/executiontrace/jsexecutiontrace-index20111206185421.dtrace"));
-		findGEBID(
-				"/new_jsassertions/executiontrace/jsexecutiontrace-index20111206185421.dtrace",
-				"");
 	}
 
 	public RootCauseAnalyzer(String jsSourceFolder) {
-		JS_SOURCE_FOLDER = jsSourceFolder;
+		this.JS_SOURCE_FOLDER = jsSourceFolder;
 	}
 
 	public static List<List<FunctionTrace>> extractSequences(
@@ -297,7 +294,7 @@ public class RootCauseAnalyzer {
 		return errMsg;
 	}
 
-	public static boolean findGEBID(String filepath, String initNullVar) {
+	public static boolean findGEBID(String filepath, String initNullVar, int errorId) {
 		TraceParser tp = new TraceParser(filepath);
 
 		List<List<FunctionTrace>> sequences = extractSequences(tp.function_traces);
@@ -309,6 +306,7 @@ public class RootCauseAnalyzer {
 		// We're assuming the last trace is always the one corresponding to
 		// erroneous line
 		GEBIDLineFinder gebid_line = new GEBIDLineFinder(initNullVar, lft);
+		gebid_line.setErrorId(errorId);
 		gebid_line.setJsSourceFolder(JS_SOURCE_FOLDER);
 
 		gebid_line.findGEBIDLine();
@@ -316,16 +314,11 @@ public class RootCauseAnalyzer {
 		if (gebid_line.getGEBIDLineFt() != null) {
 
 			FunctionTrace gebidLineFt = gebid_line.getGEBIDLineFt();
-			System.err.println(gebidLineFt.f_decl.ppt_decl);
-			System.err.println(gebidLineFt.f_decl.f_name);
+			//System.err.println(gebidLineFt.f_decl.ppt_decl);
+			//System.err.println(gebidLineFt.f_decl.f_name);
 
-			// Append result to resultTable
-			// TableItem item = new TableItem(AutofloxView.resultTable,
-			// SWT.NONE);
-			// item.setText(0, gebidLineFt.f_decl.ppt_decl);
-			// item.setText(1, gebidLineFt.f_decl.f_name);
-			// item.setText(2, gebidLineFt.f_decl.ppt_decl);
-
+			String[] traceTable = gebid_line.getTraceTable();
+			
 			String funcName = gebidLineFt.f_decl.f_name;
 			String pptDecl = gebidLineFt.f_decl.ppt_decl;
 			
@@ -493,7 +486,7 @@ public class RootCauseAnalyzer {
 		// TraceParser tp = new TraceParser("test_gebidline6.dtrace");
 		// TraceParser tp = new TraceParser("test_gebidline7.dtrace");
 		// TraceParser tp = new TraceParser("test_gebidline8.dtrace");
-		TraceParser tp = new TraceParser("test_gebidline9.dtrace");
+		TraceParser tp = new TraceParser("/home/cclinus/runtime-EclipseApplication/autoflox_proxy/jsSource");
 
 		List<List<FunctionTrace>> sequences = extractSequences(tp.function_traces);
 		// Iterator it = sequences.iterator();
