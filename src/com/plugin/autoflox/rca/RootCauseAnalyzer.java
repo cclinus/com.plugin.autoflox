@@ -296,7 +296,7 @@ public class RootCauseAnalyzer {
 	}
 
 	public static boolean findGEBID(String filepath, String initNullVar,
-			int errorId) {
+			int errorId) throws IOException {
 		TraceParser tp = new TraceParser(filepath);
 
 		List<List<FunctionTrace>> sequences = extractSequences(tp.function_traces);
@@ -320,6 +320,15 @@ public class RootCauseAnalyzer {
 			// System.err.println(gebidLineFt.f_decl.f_name);
 
 			ArrayList<String> traceTable = gebid_line.getTraceTable();
+			
+			// Add type for each line
+			String firstLine = traceTable.get(0);
+			firstLine = firstLine + "Error Thrown:::";
+			traceTable.set(0, firstLine);
+			
+			String lastLine = traceTable.get(traceTable.size()-1);
+			lastLine = lastLine + "Direct DOM Access:::";
+			traceTable.set(traceTable.size()-1, lastLine);
 
 			// String funcName = gebidLineFt.f_decl.f_name;
 			// String pptDecl = gebidLineFt.f_decl.ppt_decl;
@@ -533,7 +542,7 @@ public class RootCauseAnalyzer {
 		// System.out.println(gebid_line.GEBID)
 	}
 
-	public static void testGEBIDLineFinder() {
+	public static void testGEBIDLineFinder() throws IOException {
 		// TraceParser tp = new TraceParser("test.dtrace");
 		// TraceParser tp = new TraceParser("test_gebidline.dtrace");
 		// TraceParser tp = new TraceParser("test_gebidline2.dtrace");
@@ -585,7 +594,7 @@ public class RootCauseAnalyzer {
 		}
 	}
 
-	public static void testTaskFreak() {
+	public static void testTaskFreak() throws IOException {
 		// TraceParser tp = new TraceParser("taskfreak_execution_trace.dtrace");
 		// //1
 		// TraceParser tp = new
@@ -696,7 +705,7 @@ public class RootCauseAnalyzer {
 		}
 	}
 
-	public static void testTudu() {
+	public static void testTudu() throws IOException {
 		// TraceParser tp = new TraceParser("tudu_execution_trace1.dtrace"); //1
 		// TraceParser tp = new TraceParser("tudu_execution_trace2.dtrace"); //2
 		// TraceParser tp = new TraceParser("tudu_execution_trace3.dtrace"); //3
@@ -783,7 +792,7 @@ public class RootCauseAnalyzer {
 		}
 	}
 
-	public static void testWordPress() {
+	public static void testWordPress() throws IOException {
 		// TraceParser tp = new TraceParser("wp_execution_trace1.dtrace"); //1
 		// TraceParser tp = new TraceParser("wp_execution_trace2.dtrace"); //2
 		// TraceParser tp = new TraceParser("wp_execution_trace3.dtrace"); //3
@@ -835,7 +844,7 @@ public class RootCauseAnalyzer {
 		}
 	}
 
-	public static void testTumblr() {
+	public static void testTumblr() throws IOException {
 		long startTime = System.nanoTime();
 		long endTime;
 

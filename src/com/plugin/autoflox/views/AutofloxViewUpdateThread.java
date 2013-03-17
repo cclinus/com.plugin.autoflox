@@ -49,6 +49,9 @@ public class AutofloxViewUpdateThread extends Thread {
 					// Clean the file
 					file = new File(RESULT_FILE_PATH);
 					file.delete();
+					
+					fis.close();
+					br.close();
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -98,13 +101,20 @@ public class AutofloxViewUpdateThread extends Thread {
 						String itemFuncName = itemColums[3];
 						String itemPath = itemColums[4];
 						String itemLine = itemColums[5];
+						String itemErrorType = "";
+						
+						// Check if the line has an error type
+						if(itemColums.length == 7){
+							itemErrorType = itemColums[6];
+						}
+						
 						if (AutofloxView.consoleTableMap.containsKey(itemId)) {
 							TreeItem errorDetailItem = new TreeItem(
 									AutofloxView.consoleTableMap.get(itemId),
 									SWT.NONE);
 							errorDetailItem.setText(new String[] {
-									itemExpression.trim(), itemPath, itemLine,
-									"TYPE" });
+									itemExpression.trim(), itemPath, "line " + itemLine,
+									itemErrorType });
 						}
 					} else {
 						// Error Entry

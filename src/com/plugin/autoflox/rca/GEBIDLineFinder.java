@@ -1,6 +1,7 @@
 package com.plugin.autoflox.rca;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import org.mozilla.javascript.*;
@@ -85,8 +86,9 @@ public class GEBIDLineFinder {
 	 * the corresponding FunctionTrace
 	 * <p>
 	 * Can only be called once
+	 * @throws IOException 
 	 */
-	public void findGEBIDLine() {
+	public void findGEBIDLine() throws IOException {
 
 		if (calledFinder) {
 			System.out.println("Error: findGEBIDLine called multiple times");
@@ -161,7 +163,7 @@ public class GEBIDLineFinder {
 
 			// System.err.println(currFunction);
 			executionTraceLine += currFunction + ":::";
-			
+
 			firstLine = false; // so that next line doesn't get recognized as
 								// the first line
 
@@ -208,19 +210,24 @@ public class GEBIDLineFinder {
 			if (!currType.equals("ENTER")) {
 				// Get path
 				String[] errorTraceInfo = ft.f_decl.ppt_decl.split(":::");
+				String filePath = null;
 				if (errorTraceInfo.length >= 1) {
-					String filePath = errorTraceInfo[0];
-					filePath = filePath.replace("."+currFunction, "");
+					filePath = errorTraceInfo[0];
+					filePath = filePath.replace("." + currFunction, "");
+					filePath = filePath.replace(AutofloxRunner.proxyInstrumentedFolderPath, AutofloxRunner.sourceFolderPath);
 					executionTraceLine += filePath + ":::";
 				}
 
-				executionTraceLine += getFunctionLineno(ft) + ":::";
+				// Calculate line NO. regarding on the entire file
+				int lineNoInFile = getLineNOInFile(filePath, getJSFuncDecl(ft), getFunctionLineno(ft));
+				executionTraceLine += lineNoInFile + ":::";
 
 				System.err.println("ExecutionTrace: " + executionTraceLine);
-				
+
 				// Update traceTable
 				this.traceTable.add(executionTraceLine);
-				System.err.println("Trace table size: " + this.traceTable.size());
+				System.err.println("Trace table size: "
+						+ this.traceTable.size());
 
 				// System.err.println("Line:"+getFunctionLineno(ft));
 				// System.err.println("Func Declaration:"+getJSFuncDecl(ft));
@@ -392,6 +399,38 @@ public class GEBIDLineFinder {
 				continue;
 			}
 		}
+	}
+
+	public int getLineNOInFile(String path, String funcName, int lineInFunc)
+			throws IOException {
+		int lineCounter = 1;
+		File file = new File(path);
+		if (file.exists()) {
+
+			InputStream fis = null;
+			BufferedReader br = null;
+			String line;
+
+			try {
+				fis = new FileInputStream(path);
+
+				br = new BufferedReader(new InputStreamReader(fis,
+						Charset.forName("UTF-8")));
+				while ((line = br.readLine()) != null) {
+					if (line.contains(funcName)) {
+						fis.close();
+						br.close();
+						return lineCounter + lineInFunc;
+					}
+					lineCounter++;
+				}
+			} finally {
+				br.close();
+				fis.close();
+			}
+		}
+
+		return 0;
 	}
 
 	/**
