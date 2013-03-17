@@ -105,63 +105,6 @@ public class AutofloxView extends ViewPart {
 	    TreeColumn typeColumn = new TreeColumn(tree, SWT.LEFT);
 	    typeColumn.setText("Type");
 	    typeColumn.setWidth(100);
-	    
-	    
-	    
-//	    for (int i = 0; i < 4; i++) {
-//	      TreeItem item = new TreeItem(tree, SWT.NONE);
-//	      item.setText(new String[] { "item " + i, "abc", "defghi" });
-//	      for (int j = 0; j < 4; j++) {
-//	        TreeItem subItem = new TreeItem(item, SWT.NONE);
-//	        subItem
-//	            .setText(new String[] { "subitem " + j, "jklmnop",
-//	                "qrs" });
-//	        for (int k = 0; k < 4; k++) {
-//	          TreeItem subsubItem = new TreeItem(subItem, SWT.NONE);
-//	          subsubItem.setText(new String[] { "subsubitem " + k, "tuv",
-//	              "wxyz" });
-//	        }
-//	      }
-//	    }
-	    
-	    
-
-
-	    
-//
-//		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-//				| SWT.V_SCROLL | SWT.FULL_SELECTION);
-//		viewer.setContentProvider(new ViewContentProvider());
-//		viewer.setLabelProvider(new ViewLabelProvider());
-//		viewer.setSorter(new NameSorter());
-//		viewer.setInput(getViewSite());
-//
-//		// SWT table in console view to show result
-//		resultTable = viewer.getTable();
-//		resultTable.setLocation(0, 0);
-//		resultTable.setSize(parent.getSize().x, parent.getSize().y);
-//		resultTable.setLinesVisible(true);
-//		resultTable.setHeaderVisible(true);
-//		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-//		resultTable.setLayoutData(data);
-//
-//		// Init titles
-//		String[] titles = { " Line # ", " Function Name ", " File Path " };
-//
-//		// line # column
-//		TableColumn LineNoColumn = new TableColumn(resultTable, SWT.NONE);
-//		LineNoColumn.setText(titles[0]);
-//		LineNoColumn.setWidth(150);
-//
-//		// func name column
-//		TableColumn funcNameColumn = new TableColumn(resultTable, SWT.NONE);
-//		funcNameColumn.setText(titles[1]);
-//		funcNameColumn.setWidth(200);
-//
-//		// func name column
-//		TableColumn filePathColumn = new TableColumn(resultTable, SWT.NONE);
-//		filePathColumn.setText(titles[2]);
-//		filePathColumn.setWidth(500);
 
 	}
 

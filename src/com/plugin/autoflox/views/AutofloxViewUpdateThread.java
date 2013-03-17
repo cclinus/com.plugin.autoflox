@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.plugin.autoflox.action.AutofloxRunAction;
@@ -49,7 +51,7 @@ public class AutofloxViewUpdateThread extends Thread {
 					// Clean the file
 					file = new File(RESULT_FILE_PATH);
 					file.delete();
-					
+
 					fis.close();
 					br.close();
 
@@ -86,13 +88,8 @@ public class AutofloxViewUpdateThread extends Thread {
 			public void run() {
 				synchronized (this) {
 					System.out.println("Add new item to table");
-					// TableItem item = new TableItem(AutofloxView.resultTable,
-					// SWT.NONE);
-					// item.setText(0, itemColums[2]);
-					// item.setText(1, itemColums[1]);
-					// item.setText(2, itemColums[0]);
 
-					String itemId = itemColums[0];
+					final String itemId = itemColums[0];
 					String itemType = itemColums[1];
 					String itemExpression = itemColums[2];
 
@@ -102,19 +99,29 @@ public class AutofloxViewUpdateThread extends Thread {
 						String itemPath = itemColums[4];
 						String itemLine = itemColums[5];
 						String itemErrorType = "";
-						
+
 						// Check if the line has an error type
-						if(itemColums.length == 7){
+						if (itemColums.length == 7) {
 							itemErrorType = itemColums[6];
 						}
-						
+
 						if (AutofloxView.consoleTableMap.containsKey(itemId)) {
 							TreeItem errorDetailItem = new TreeItem(
 									AutofloxView.consoleTableMap.get(itemId),
 									SWT.NONE);
 							errorDetailItem.setText(new String[] {
-									itemExpression.trim(), itemPath, "line " + itemLine,
-									itemErrorType });
+									itemExpression.trim(), itemPath,
+									"line " + itemLine, itemErrorType });
+
+							AutofloxView.PanelTree.addListener(SWT.Selection, new Listener() {
+							      public void handleEvent(Event e) {
+							        String string = "";
+							        TreeItem[] selection = AutofloxView.PanelTree.getSelection();
+							        for (int i = 0; i < selection.length; i++)
+							          string += selection[i] + " ";
+							        System.out.println("Selection={" + string + "}");
+							      }
+							    });
 						}
 					} else {
 						// Error Entry
@@ -127,7 +134,8 @@ public class AutofloxViewUpdateThread extends Thread {
 
 							// Add the error entry messages to console
 							newErrorTreeItem.setText(new String[] {
-									"Code-terminating DOM-related Error: " + itemExpression, "", "", "" });
+									"Code-terminating DOM-related Error: "
+											+ itemExpression, "", "", "" });
 						}
 					}
 
