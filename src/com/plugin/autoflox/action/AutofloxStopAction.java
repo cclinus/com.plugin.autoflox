@@ -1,7 +1,10 @@
 package com.plugin.autoflox.action;
 
+import java.util.HashMap;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -25,6 +28,9 @@ public class AutofloxStopAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
+		// Clean the consoleTableMap
+		AutofloxView.consoleTableMap = new HashMap<String, TreeItem>();
+		
 		System.out.println("Autoflox stops ");
 		if (AutofloxProcessManager.cmdProcess != null) {
 			// Terminate cmd process

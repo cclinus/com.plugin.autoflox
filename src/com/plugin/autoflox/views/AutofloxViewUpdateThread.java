@@ -10,10 +10,10 @@ import java.nio.charset.Charset;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.plugin.autoflox.action.AutofloxRunAction;
@@ -114,21 +114,38 @@ public class AutofloxViewUpdateThread extends Thread {
 									itemExpression.trim(), itemPath,
 									"line " + itemLine, itemErrorType });
 
-							AutofloxView.PanelTree.addListener(SWT.Selection, new Listener() {
-							      public void handleEvent(Event e) {
-							        TreeItem[] selection = AutofloxView.PanelTree.getSelection();
-							        String lineNoText = selection[0].getText(2).replace("line ", "");
-							        int lineNo = Integer.parseInt(lineNoText);
-							        String filePath = selection[0].getText(1);
-							        AutofloxView.openFileInEditor(filePath);
-							        try {
-										AutofloxView.goToLine(lineNo);
-									} catch (BadLocationException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-							      }
-							    });
+							// Add click to line func
+							AutofloxView.PanelTree.addListener(SWT.Selection,
+									new Listener() {
+										public void handleEvent(Event e) {
+											TreeItem[] selection = AutofloxView.PanelTree
+													.getSelection();
+											if (selection.length > 0) {
+												String lineNoText = selection[0]
+														.getText(2);
+												lineNoText = lineNoText
+														.replace("line ", "");
+												if (lineNoText.trim() != "") {
+													int lineNo = Integer
+															.parseInt(lineNoText
+																	.trim());
+													String filePath = selection[0]
+															.getText(1);
+													AutofloxView
+															.openFileInEditor(filePath);
+
+													try {
+														AutofloxView
+																.goToLine(lineNo);
+													} catch (BadLocationException e1) {
+														e1.printStackTrace();
+													}
+												}
+											}else{
+												System.err.println("Nothing is selected.");
+											}
+										}
+									});
 						}
 					} else {
 						// Error Entry
@@ -145,7 +162,7 @@ public class AutofloxViewUpdateThread extends Thread {
 											+ itemExpression, "", "", "" });
 						}
 					}
-					
+
 				}
 			}
 		});
