@@ -30,7 +30,7 @@ public class GEBIDLineFinder {
 	private boolean calledFinder; // true if findGEBIDLine has already been
 									// calleds
 
-	public String[] traceTable;
+	public ArrayList<String> traceTable;
 	public int errorId;
 
 	/**
@@ -66,7 +66,7 @@ public class GEBIDLineFinder {
 		this.errorId = id;
 	}
 
-	public String[] getTraceTable() {
+	public ArrayList<String> getTraceTable() {
 		return this.traceTable;
 	}
 
@@ -125,6 +125,7 @@ public class GEBIDLineFinder {
 		boolean firstLine = true;
 
 		String executionTraceLine = null;
+		traceTable = new ArrayList();
 
 		while (seqIterator.hasPrevious()) {
 
@@ -160,7 +161,7 @@ public class GEBIDLineFinder {
 
 			// System.err.println(currFunction);
 			executionTraceLine += currFunction + ":::";
-
+			
 			firstLine = false; // so that next line doesn't get recognized as
 								// the first line
 
@@ -205,12 +206,27 @@ public class GEBIDLineFinder {
 			}
 
 			if (!currType.equals("ENTER")) {
+				// Get path
+				String[] errorTraceInfo = ft.f_decl.ppt_decl.split(":::");
+				if (errorTraceInfo.length >= 1) {
+					String filePath = errorTraceInfo[0];
+					filePath = filePath.replace("."+currFunction, "");
+					executionTraceLine += filePath + ":::";
+				}
+
+				executionTraceLine += getFunctionLineno(ft) + ":::";
+
 				System.err.println("ExecutionTrace: " + executionTraceLine);
-				//System.err.println("Line:"+getFunctionLineno(ft));
-				//System.err.println("Func Declaration:"+getJSFuncDecl(ft));
-				//System.err.println("File title: " + ft.f_decl.ppt_decl);
+				
+				// Update traceTable
+				this.traceTable.add(executionTraceLine);
+				System.err.println("Trace table size: " + this.traceTable.size());
+
+				// System.err.println("Line:"+getFunctionLineno(ft));
+				// System.err.println("Func Declaration:"+getJSFuncDecl(ft));
+				// System.err.println("File title: " + ft.f_decl.ppt_decl);
 			}
-			
+
 			/* ASYNC END */
 
 			// Check if the stack is empty

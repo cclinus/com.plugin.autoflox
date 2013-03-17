@@ -13,7 +13,8 @@ import com.plugin.autoflox.views.AutofloxView;
 
 public class RootCauseAnalyzer {
 	private static String JS_SOURCE_FOLDER;
-	private static String RESULT_FILE_PATH = AutofloxRunner.proxyBinFolderPath + "/tableResult";
+	private static String RESULT_FILE_PATH = AutofloxRunner.proxyBinFolderPath
+			+ "/tableResult";
 
 	public static void main(String[] args) {
 		// DTraceReader d_trace = new DTraceReader();
@@ -294,7 +295,8 @@ public class RootCauseAnalyzer {
 		return errMsg;
 	}
 
-	public static boolean findGEBID(String filepath, String initNullVar, int errorId) {
+	public static boolean findGEBID(String filepath, String initNullVar,
+			int errorId) {
 		TraceParser tp = new TraceParser(filepath);
 
 		List<List<FunctionTrace>> sequences = extractSequences(tp.function_traces);
@@ -314,19 +316,20 @@ public class RootCauseAnalyzer {
 		if (gebid_line.getGEBIDLineFt() != null) {
 
 			FunctionTrace gebidLineFt = gebid_line.getGEBIDLineFt();
-			//System.err.println(gebidLineFt.f_decl.ppt_decl);
-			//System.err.println(gebidLineFt.f_decl.f_name);
+			// System.err.println(gebidLineFt.f_decl.ppt_decl);
+			// System.err.println(gebidLineFt.f_decl.f_name);
 
-			String[] traceTable = gebid_line.getTraceTable();
-			
-			String funcName = gebidLineFt.f_decl.f_name;
-			String pptDecl = gebidLineFt.f_decl.ppt_decl;
-			
-			String combinedOutput = pptDecl.replace("."+funcName, ":::"+funcName+":::"); 
-			outputTableItem(combinedOutput);
-			
+			ArrayList<String> traceTable = gebid_line.getTraceTable();
+
+			// String funcName = gebidLineFt.f_decl.f_name;
+			// String pptDecl = gebidLineFt.f_decl.ppt_decl;
+			// String combinedOutput = pptDecl.replace("."+funcName,
+			// ":::"+funcName+":::");
+
+			outputTableItem(traceTable);
+
 			return true;
-			
+
 		} else {
 			return false;
 		}
@@ -334,11 +337,14 @@ public class RootCauseAnalyzer {
 
 	// Dump trace to file, in view table format
 	// Append
-	public static void outputTableItem(String item) {
+	public static void outputTableItem(ArrayList<String> traceTable) {
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(
 					new FileWriter(RESULT_FILE_PATH, true)));
-			out.println(item);
+			while (traceTable.size() > 0) {
+				String item = traceTable.remove(traceTable.size() - 1);
+				out.println(item);
+			}
 			out.close();
 		} catch (IOException e) {
 			// oh noes!
@@ -486,7 +492,8 @@ public class RootCauseAnalyzer {
 		// TraceParser tp = new TraceParser("test_gebidline6.dtrace");
 		// TraceParser tp = new TraceParser("test_gebidline7.dtrace");
 		// TraceParser tp = new TraceParser("test_gebidline8.dtrace");
-		TraceParser tp = new TraceParser("/home/cclinus/runtime-EclipseApplication/autoflox_proxy/jsSource");
+		TraceParser tp = new TraceParser(
+				"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/jsSource");
 
 		List<List<FunctionTrace>> sequences = extractSequences(tp.function_traces);
 		// Iterator it = sequences.iterator();
