@@ -1,8 +1,11 @@
 package com.plugin.autoflox.views;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
@@ -16,7 +19,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -26,7 +28,9 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -135,6 +139,24 @@ public class AutofloxView extends ViewPart {
 			return path.toString();
 		} else {
 			return null;
+		}
+	}
+	
+	public static void openFileInEditor(String path){
+		File fileToOpen = new File(path);
+		 
+		if (fileToOpen.exists() && fileToOpen.isFile()) {
+		    IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
+		    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		 
+		    try {
+		        IDE.openEditorOnFileStore( page, fileStore );
+		    } catch ( PartInitException e ) {
+		        //Put your exception handler here if you wish to
+		    }
+		} else {
+		    //Do something if the file does not exist
+			System.err.println("File does not exist: " + path);
 		}
 	}
 

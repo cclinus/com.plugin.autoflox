@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -115,11 +116,17 @@ public class AutofloxViewUpdateThread extends Thread {
 
 							AutofloxView.PanelTree.addListener(SWT.Selection, new Listener() {
 							      public void handleEvent(Event e) {
-							        String string = "";
 							        TreeItem[] selection = AutofloxView.PanelTree.getSelection();
-							        for (int i = 0; i < selection.length; i++)
-							          string += selection[i] + " ";
-							        System.out.println("Selection={" + string + "}");
+							        String lineNoText = selection[0].getText(2).replace("line ", "");
+							        int lineNo = Integer.parseInt(lineNoText);
+							        String filePath = selection[0].getText(1);
+							        AutofloxView.openFileInEditor(filePath);
+							        try {
+										AutofloxView.goToLine(lineNo);
+									} catch (BadLocationException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
 							      }
 							    });
 						}
@@ -138,10 +145,7 @@ public class AutofloxViewUpdateThread extends Thread {
 											+ itemExpression, "", "", "" });
 						}
 					}
-
-					// System.err.println(itemId + " " + itemType + " "
-					// + itemExpression + " " + itemFuncName + " " + itemPath
-					// + " " + itemLine);
+					
 				}
 			}
 		});
