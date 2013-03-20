@@ -8,12 +8,12 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import com.plugin.autoflox.service.ProcessManager;
 import com.plugin.autoflox.views.AutofloxView;
 import com.plugin.autoflox.views.AutofloxViewUpdateThread;
 
 public class AutofloxStopAction implements IWorkbenchWindowActionDelegate {
 	private static IWorkbenchWindow window;
-	public static String workspacePath;
 
 	/**
 	 * The constructor.
@@ -32,10 +32,9 @@ public class AutofloxStopAction implements IWorkbenchWindowActionDelegate {
 		AutofloxView.consoleTableMap = new HashMap<String, TreeItem>();
 		
 		System.out.println("Autoflox stops ");
-		if (AutofloxProcessManager.cmdProcess != null) {
+		if (ProcessManager.isAutofloxRun()) {
 			// Terminate cmd process
-			AutofloxProcessManager.cmdProcess.destroy();
-			AutofloxProcessManager.cmdProcess = null;
+			ProcessManager.stopAutoflox();
 			// Terminate AutofloxViewUpdateThread
 			AutofloxViewUpdateThread.terminate();
 			// Clean console

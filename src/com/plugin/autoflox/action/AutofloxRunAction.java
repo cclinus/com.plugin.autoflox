@@ -8,7 +8,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.plugin.autoflox.service.AutofloxService;
+import com.plugin.autoflox.service.ProcessManager;
 import com.plugin.autoflox.service.FileManager;
 import com.plugin.autoflox.views.AutofloxView;
 import com.plugin.autoflox.views.AutofloxViewUpdateThread;
@@ -30,7 +30,7 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void run(IAction action) {
 
-		if (AutofloxProcessManager.cmdProcess == null) {
+		if (!ProcessManager.isAutofloxRun()) {
 
 			System.out.println("Autoflox runs ");
 			String workspacePath, currentOpenedFilePath;
@@ -68,7 +68,7 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 				try {
 					// Start autoflox process
 					FileManager.initFolderStruc();
-					AutofloxProcessManager.cmdProcess = Runtime.getRuntime()
+					ProcessManager.autofloxProcess = Runtime.getRuntime()
 							.exec("java -jar " + FileManager.getSbinFolder()
 									+ "autoflox-cmd.jar "
 									+ FileManager.getProjectFolder() + " "
