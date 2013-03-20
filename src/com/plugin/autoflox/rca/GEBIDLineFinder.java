@@ -6,6 +6,8 @@ import java.util.*;
 
 import org.mozilla.javascript.*;
 
+import com.plugin.autoflox.service.FileManager;
+
 public class GEBIDLineFinder {
 	private Stack<String> funcStack; // The function stack
 	private String last_func; // Set to the last function popped before the
@@ -214,7 +216,7 @@ public class GEBIDLineFinder {
 				if (errorTraceInfo.length >= 1) {
 					filePath = errorTraceInfo[0];
 					filePath = filePath.replace("." + currFunction, "");
-					filePath = filePath.replace(AutofloxRunner.proxyInstrumentedFolderPath, AutofloxRunner.sourceFolderPath);
+					filePath = filePath.replace(FileManager.getProxyInstrumentedFolder(), FileManager.getProjectFolder());
 					executionTraceLine += filePath + ":::";
 				}
 

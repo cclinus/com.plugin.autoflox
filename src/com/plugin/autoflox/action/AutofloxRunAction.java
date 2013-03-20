@@ -9,17 +9,12 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 import com.plugin.autoflox.service.AutofloxService;
+import com.plugin.autoflox.service.FileManager;
 import com.plugin.autoflox.views.AutofloxView;
 import com.plugin.autoflox.views.AutofloxViewUpdateThread;
 
 public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 	private static IWorkbenchWindow window;
-	public static String workspacePath;
-	public static String currentOpenedFilePath;
-	public static String projectPath;
-	public static String proxyFolderPath;
-	public static String sbinFolderPath;
-	public static String instrumentedFolderPath;
 
 	/**
 	 * The constructor.
@@ -38,6 +33,7 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 		if (AutofloxProcessManager.cmdProcess == null) {
 
 			System.out.println("Autoflox runs ");
+			String workspacePath, currentOpenedFilePath;
 			boolean pathCheckFlag = false;
 			try {
 				// Get workspace path
@@ -54,41 +50,36 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 			if (pathCheckFlag) {
 
 				// Get project folder
-				String parseProjectString = AutofloxService.stringDiff(
+				String parseProjectString = FileManager.stringDiff(
 						workspacePath, currentOpenedFilePath);
 
-				// Parse the project name
+				// Set up FileManager
 				String[] temp;
 				temp = parseProjectString.split("/");
 				String projectName = temp[1];
-
-				projectPath = workspacePath + "/" + projectName + "/";
-				System.out.println("Project path:" + projectPath);
-
-				File checkPath = new File(this.getClass().getProtectionDomain()
-						.getCodeSource().getLocation().getPath());
-				sbinFolderPath = checkPath + "/sbin/";
-
-				proxyFolderPath = workspacePath + "/autoflox_proxy";
-				instrumentedFolderPath = proxyFolderPath + "instrumented/";
-
-				// openDialog("AutoFlox",
-				// "AutoFlox runs. Please navigate your browser to the AutoFlox proxy at "+instrumentedFolderPath);
+				String projectFolder = workspacePath + "/" + projectName + "/";
+				File currentClassPath = new File(this.getClass()
+						.getProtectionDomain().getCodeSource().getLocation()
+						.getPath());
+				String sbinFolder = currentClassPath + "/sbin/";
+				String proxyFolder = workspacePath + "/autoflox_proxy/";
+				FileManager.build(projectFolder, proxyFolder, sbinFolder);
 
 				try {
-					AutofloxService.initFolderStruc(projectPath,
-							proxyFolderPath, sbinFolderPath);
+					// Start autoflox process
+					FileManager.initFolderStruc();
 					AutofloxProcessManager.cmdProcess = Runtime.getRuntime()
-							.exec("java -jar " + sbinFolderPath
-									+ "autoflox-cmd.jar " + projectPath + " "
-									+ proxyFolderPath);
+							.exec("java -jar " + FileManager.getSbinFolder()
+									+ "autoflox-cmd.jar "
+									+ FileManager.getProjectFolder() + " "
+									+ FileManager.getProxyFolder());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 				new AutofloxViewUpdateThread().start();
 			}
-		}else{
+		} else {
 			System.err.println("rca is running already.");
 		}
 

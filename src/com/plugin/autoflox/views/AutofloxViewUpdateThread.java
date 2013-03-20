@@ -17,22 +17,21 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.plugin.autoflox.action.AutofloxRunAction;
+import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxViewUpdateThread extends Thread {
 
-	private static String RESULT_FILE_PATH = AutofloxRunAction.workspacePath
-			+ "/autoflox_proxy/bin/tableResult";
-	public static boolean running = true;
+	public static boolean runFlag = true;
 
 	public static void terminate() {
-		running = false;
+		runFlag = false;
 	}
 
 	public void run() {
-		running = true;
-		while (running) {
+		runFlag = true;
+		while (runFlag) {
 			// Check if the file exists
-			File file = new File(RESULT_FILE_PATH);
+			File file = new File(FileManager.getTableResultFile());
 			if (file.exists()) {
 
 				InputStream fis;
@@ -40,7 +39,7 @@ public class AutofloxViewUpdateThread extends Thread {
 				String line;
 
 				try {
-					fis = new FileInputStream(RESULT_FILE_PATH);
+					fis = new FileInputStream(FileManager.getTableResultFile());
 
 					br = new BufferedReader(new InputStreamReader(fis,
 							Charset.forName("UTF-8")));
@@ -50,7 +49,7 @@ public class AutofloxViewUpdateThread extends Thread {
 					}
 
 					// Clean the file
-					file = new File(RESULT_FILE_PATH);
+					file = new File(FileManager.getTableResultFile());
 					file.delete();
 
 					fis.close();

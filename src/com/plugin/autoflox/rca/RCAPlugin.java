@@ -6,12 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.plugin.autoflox.service.FileManager;
+
 public class RCAPlugin {
 	private static String outputFolder;
 	private static String traceFolder;
-	private static String jsSourceFolder;	
-	private static String RESULT_FILE_PATH = AutofloxRunner.proxyBinFolderPath
-			+ "/tableResult";
+	private static String jsSourceFolder;
 
 	public RCAPlugin(String trace_folder) {
 		// trace_folder should be set to the folder where the traces are stored
@@ -77,7 +77,7 @@ public class RCAPlugin {
 					+ "1:::" + errorMessage + ":::";
 			
 			PrintWriter out = new PrintWriter(new BufferedWriter(
-					new FileWriter(RESULT_FILE_PATH, true)));
+					new FileWriter(FileManager.getTableResultFile(), true)));
 			out.println(executionTrace);
 			out.close();
 

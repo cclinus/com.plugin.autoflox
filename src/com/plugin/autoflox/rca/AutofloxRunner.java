@@ -9,19 +9,19 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
-import com.plugin.autoflox.service.AutofloxService;
-import com.plugin.autoflox.service.aji.DumpFileThread;
-import com.plugin.autoflox.service.aji.JSASTModifierWrapper;
-import com.plugin.autoflox.service.aji.executiontracer.AstInstrumenter;
+import com.plugin.autoflox.invarscope.aji.DumpFileThread;
+import com.plugin.autoflox.invarscope.aji.JSASTModifierWrapper;
+import com.plugin.autoflox.invarscope.aji.executiontracer.AstInstrumenter;
+import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxRunner {
 
-	public static String sourceFolderPath;
-	public static String dumpFilePath;
-	public static String proxyInstrumentedFolderPath;
-	public static String proxyFolderPath;
-	public static String proxyBinFolderPath;
-	public static String proxyJsOutputFolderPath;
+	// public static String sourceFolderPath;
+	// public static String dumpFilePath;
+	// public static String proxyInstrumentedFolderPath;
+	// public static String proxyFolderPath;
+	// public static String proxyBinFolderPath;
+	// public static String proxyJsOutputFolderPath;
 
 	/**
 	 * @param 1: js source folder where all js and html files are located:
@@ -32,56 +32,53 @@ public class AutofloxRunner {
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 
-		sourceFolderPath = args[0];//"/home/cclinus/runtime-EclipseApplication/webTest/";//
-		proxyFolderPath = args[1];//"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//args[1];
+		String projectFolder = args[0];// "/home/cclinus/runtime-EclipseApplication/webTest/";//
+		String proxyFolder = args[1];// "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//args[1];
 
-		proxyInstrumentedFolderPath = proxyFolderPath + "/instrumented/";
-		proxyBinFolderPath = proxyFolderPath + "/bin/";
-		dumpFilePath = proxyBinFolderPath + "/dump_data";
-		proxyJsOutputFolderPath = proxyFolderPath + "/jsSource/";
+		// Set up FileManager
+		FileManager.build(projectFolder, proxyFolder, null);
 
 		modifyJsToolFiles();
 
-		File sourceFolderFile = new File(sourceFolderPath);
-		traverseAndInstrument(sourceFolderFile, sourceFolderPath,
-				proxyInstrumentedFolderPath);
+		File projectFolderFile = new File(FileManager.getProjectFolder());
+		traverseAndInstrument(projectFolderFile,
+				FileManager.getProjectFolder(),
+				FileManager.getProxyInstrumentedFolder());
 
 		// Start a thread that read and clean dump_file
-		new DumpFileThread(dumpFilePath).start();
+		new DumpFileThread(FileManager.getDumpDataFile()).start();
 	}
 
-	public static void traverseAndInstrument(File node,
-			String sourceFolderPath, String proxyFolderPath)
-			throws IOException, SAXException {
+	public static void traverseAndInstrument(File node, String projectFolder,
+			String proxyFolder) throws IOException, SAXException {
 
 		if (node.isFile()) {
 			System.out.println(node.getAbsolutePath());
-			initInstrumentation(node.getAbsolutePath(), sourceFolderPath,
-					proxyFolderPath);
+			initInstrumentation(node.getAbsolutePath(), projectFolder,
+					proxyFolder);
 		}
-		// System.out.println(node.getAbsoluteFile());
 
 		if (node.isDirectory()) {
 			String[] subNote = node.list();
 			for (String filename : subNote) {
-				traverseAndInstrument(new File(node, filename),
-						sourceFolderPath, proxyFolderPath);
+				traverseAndInstrument(new File(node, filename), projectFolder,
+						proxyFolder);
 			}
 		}
 
 	}
 
 	public static void initInstrumentation(String sourceFilePath,
-			String sourceFolderPath, String proxyFolderPath)
-			throws IOException, SAXException {
+			String projectFolder, String proxyFolder) throws IOException,
+			SAXException {
 		// Instrumentation
 		JSASTModifierWrapper modifierWrapper = new JSASTModifierWrapper(
 				new AstInstrumenter());
 		modifierWrapper.setInstrumentAsyncs(false);
 
-		String relativePath = AutofloxService.stringDiff(sourceFolderPath,
+		String relativePath = FileManager.stringDiff(projectFolder,
 				sourceFilePath);
-		String destPath = proxyFolderPath + relativePath;
+		String destPath = proxyFolder + relativePath;
 
 		// Make dirs
 		File destFile = new File(destPath);
@@ -93,13 +90,14 @@ public class AutofloxRunner {
 	// Modify addVariable.js call path of receiveData.php
 	public static void modifyJsToolFiles() throws IOException {
 		// For addvariable.js
-		String addVarFilePath = proxyBinFolderPath + "/addvariable.js";
+		String addVarFilePath = FileManager.getAddvariableScript();
 		String addVarContent;
 		File addVarFile = new File(addVarFilePath);
 		if (addVarFile.exists()) {
 			FileInputStream inputStream = new FileInputStream(addVarFilePath);
 			try {
 				addVarContent = IOUtils.toString(inputStream);
+				// FIXME Need a better way to deal with constant
 				addVarContent = addVarContent.replace("receiveData.php",
 						"/autoflox_proxy/bin/receiveData.php");
 			} finally {
@@ -108,13 +106,11 @@ public class AutofloxRunner {
 			FileWriter fstream = new FileWriter(addVarFilePath);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(addVarContent);
-			// Close the output stream
 			out.close();
 		}
 
 		// For addvariable_noAsync.js
-		String addVarNoAsyFilePath = proxyBinFolderPath
-				+ "/addvariable_noAsync.js";
+		String addVarNoAsyFilePath = FileManager.getAddvariableNoAsyncScript();
 		String addVarNoAsyContent;
 		File addVarNoAsyFile = new File(addVarNoAsyFilePath);
 		if (addVarNoAsyFile.exists()) {
@@ -122,6 +118,7 @@ public class AutofloxRunner {
 					addVarNoAsyFilePath);
 			try {
 				addVarNoAsyContent = IOUtils.toString(inputStream);
+				// FIXME Need a better way to deal with constant
 				addVarNoAsyContent = addVarNoAsyContent.replace(
 						"receiveData.php",
 						"/autoflox_proxy/bin/receiveData.php");
@@ -131,7 +128,6 @@ public class AutofloxRunner {
 			FileWriter fstream = new FileWriter(addVarNoAsyFilePath);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(addVarNoAsyContent);
-			// Close the output stream
 			out.close();
 		}
 

@@ -9,12 +9,11 @@ import org.eclipse.swt.widgets.TableItem;
 //import com.google.javascript.rhino.*;
 import org.mozilla.javascript.*;
 
+import com.plugin.autoflox.service.FileManager;
 import com.plugin.autoflox.views.AutofloxView;
 
 public class RootCauseAnalyzer {
 	private static String JS_SOURCE_FOLDER;
-	private static String RESULT_FILE_PATH = AutofloxRunner.proxyBinFolderPath
-			+ "/tableResult";
 
 	public static void main(String[] args) {
 		// DTraceReader d_trace = new DTraceReader();
@@ -349,7 +348,7 @@ public class RootCauseAnalyzer {
 	public static void outputTableItem(ArrayList<String> traceTable) {
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(
-					new FileWriter(RESULT_FILE_PATH, true)));
+					new FileWriter(FileManager.getTableResultFile(), true)));
 			while (traceTable.size() > 0) {
 				String item = traceTable.remove(traceTable.size() - 1);
 				out.println(item);
