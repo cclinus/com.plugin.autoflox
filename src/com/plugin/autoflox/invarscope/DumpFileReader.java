@@ -1,4 +1,4 @@
-package com.plugin.autoflox.invarscope.aji;
+package com.plugin.autoflox.invarscope;
 
 import java.io.File;
 import java.io.FileInputStream;

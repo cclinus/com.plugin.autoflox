@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
-import com.plugin.autoflox.invarscope.aji.DumpFileThread;
+import com.plugin.autoflox.invarscope.DumpFileThread;
 import com.plugin.autoflox.invarscope.aji.JSASTModifierWrapper;
 import com.plugin.autoflox.invarscope.aji.executiontracer.AstInstrumenter;
 import com.plugin.autoflox.service.FileManager;
