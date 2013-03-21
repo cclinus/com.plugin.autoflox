@@ -16,13 +16,6 @@ import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxRunner {
 
-	// public static String sourceFolderPath;
-	// public static String dumpFilePath;
-	// public static String proxyInstrumentedFolderPath;
-	// public static String proxyFolderPath;
-	// public static String proxyBinFolderPath;
-	// public static String proxyJsOutputFolderPath;
-
 	/**
 	 * @param 1: js source folder where all js and html files are located:
 	 *        sourceFolderPath(projectFolderPath) 2: proxyFolderPath
