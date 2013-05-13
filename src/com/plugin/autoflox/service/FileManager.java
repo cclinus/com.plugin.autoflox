@@ -33,11 +33,11 @@ public class FileManager {
 	public static String getSbinFolder() {
 		return FileManager.sbinFolder;
 	}
-	
+
 	public static String getSbinReceiveData() {
 		return FileManager.sbinFolder + "receiveData.php";
 	}
-	
+
 	public static String getSbinAddvariableScript() {
 		return FileManager.sbinFolder + "addvariable.js";
 	}
@@ -61,7 +61,7 @@ public class FileManager {
 	public static String getProxyTraceFolder() {
 		return FileManager.proxyFolder + "trace/";
 	}
-	
+
 	public static String getProxyTraceExecutiontraceFolder() {
 		return FileManager.proxyFolder + "trace/executiontrace/";
 	}
@@ -94,13 +94,15 @@ public class FileManager {
 		}
 		proxyFolderFile.mkdirs();
 		// Create file structure of the proxy
-		File instrumentFolderFile = new File(FileManager.getProxyInstrumentedFolder());
+		File instrumentFolderFile = new File(
+				FileManager.getProxyInstrumentedFolder());
 		instrumentFolderFile.mkdirs();
 		instrumentFolderFile.setWritable(true, false);
 		File jsSourceFolderFile = new File(FileManager.getProxyJsSourceFolder());
 		jsSourceFolderFile.mkdirs();
 		jsSourceFolderFile.setWritable(true, false);
-		File traceFolderFile = new File(FileManager.getProxyTraceExecutiontraceFolder());
+		File traceFolderFile = new File(
+				FileManager.getProxyTraceExecutiontraceFolder());
 		traceFolderFile.mkdirs();
 		traceFolderFile.setWritable(true, false);
 		File binFolderFile = new File(FileManager.getProxyBinFolder());
@@ -116,8 +118,10 @@ public class FileManager {
 		File addVarDest = new File(FileManager.getAddvariableScript());
 		FileManager.copy(addVarSource, addVarDest);
 
-		File addVarNoSynSource = new File(FileManager.getSbinAddvariableNoAsyncScript());
-		File addVarNoSynDest = new File(FileManager.getAddvariableNoAsyncScript());
+		File addVarNoSynSource = new File(
+				FileManager.getSbinAddvariableNoAsyncScript());
+		File addVarNoSynDest = new File(
+				FileManager.getAddvariableNoAsyncScript());
 		FileManager.copy(addVarNoSynSource, addVarNoSynDest);
 
 	}
@@ -133,9 +137,7 @@ public class FileManager {
 		int length;
 		// copy the file content in bytes
 		while ((length = inStream.read(buffer)) > 0) {
-
 			outStream.write(buffer, 0, length);
-
 		}
 
 		inStream.close();

@@ -46,9 +46,12 @@ public class AutofloxRunner {
 			String proxyFolder) throws IOException, SAXException {
 
 		if (node.isFile()) {
-			System.out.println(node.getAbsolutePath());
-			initInstrumentation(node.getAbsolutePath(), projectFolder,
-					proxyFolder);
+			if (node.getAbsolutePath().toLowerCase().contains(".js")
+					|| node.getAbsolutePath().toLowerCase().contains(".html")) {
+				System.out.println("Instrumenting "+node.getAbsolutePath());
+				initInstrumentation(node.getAbsolutePath(), projectFolder,
+						proxyFolder);
+			}
 		}
 
 		if (node.isDirectory()) {
@@ -91,8 +94,8 @@ public class AutofloxRunner {
 			try {
 				addVarContent = IOUtils.toString(inputStream);
 				// FIXME Need a better way to deal with constant
-				addVarContent = addVarContent.replace("receiveData.php",
-						"/autoflox_proxy/bin/receiveData.php");
+				addVarContent = addVarContent.replace("'receiveData.php'",
+						"'/autoflox_proxy/bin/receiveData.php'");
 			} finally {
 				inputStream.close();
 			}
@@ -113,8 +116,8 @@ public class AutofloxRunner {
 				addVarNoAsyContent = IOUtils.toString(inputStream);
 				// FIXME Need a better way to deal with constant
 				addVarNoAsyContent = addVarNoAsyContent.replace(
-						"receiveData.php",
-						"/autoflox_proxy/bin/receiveData.php");
+						"'receiveData.php'",
+						"'/autoflox_proxy/bin/receiveData.php'");
 			} finally {
 				inputStream.close();
 			}

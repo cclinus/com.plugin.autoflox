@@ -273,7 +273,8 @@ public class JSASTModifierWrapper {
 	        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
 	        transformer.transform(new DOMSource(doc), new StreamResult(sw));
-	        return sw.toString();
+	        // Clean up junk chars in xml before turning to html code
+	        return "<!DOCTYPE html>" + sw.toString().replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&");
 	    } catch (Exception ex) {
 	        throw new RuntimeException("Error converting to String", ex);
 	    }

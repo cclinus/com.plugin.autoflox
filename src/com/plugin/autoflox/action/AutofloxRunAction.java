@@ -68,11 +68,13 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 				try {
 					// Start autoflox process
 					FileManager.initFolderStruc();
+					String runCmd = "java -jar " + FileManager.getSbinFolder()
+							+ "autoflox-cmd.jar "
+							+ FileManager.getProjectFolder() + " "
+							+ FileManager.getProxyFolder();
+					System.out.println("Run Cmd: " + runCmd);
 					ProcessManager.autofloxProcess = Runtime.getRuntime()
-							.exec("java -jar " + FileManager.getSbinFolder()
-									+ "autoflox-cmd.jar "
-									+ FileManager.getProjectFolder() + " "
-									+ FileManager.getProxyFolder());
+							.exec(runCmd);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
