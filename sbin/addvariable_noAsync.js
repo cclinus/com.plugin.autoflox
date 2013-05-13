@@ -1,11 +1,8 @@
 window.xhr = new XMLHttpRequest();
 window.buffer = new Array();
-var totalValue;
 function send(value) {
 	window.buffer.push(value);
-	totalValue += value;
-	if (totalValue.indexOf(':::ERROR') !== -1) {
-		totalValue = "";
+	if (window.buffer.length > 10 || value.indexOf(':::ERROR') !== -1) {
 		sendReally();
 	}
 }
