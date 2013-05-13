@@ -2,6 +2,8 @@ package com.plugin.autoflox.invarscope;
 
 import java.io.IOException;
 
+import org.json.JSONArray;
+
 import com.plugin.autoflox.invarscope.aji.executiontracer.JSExecutionTracer;
 import com.plugin.autoflox.rca.AutofloxRunner;
 import com.plugin.autoflox.rca.RCAPlugin;
@@ -35,7 +37,7 @@ public class DumpFileThread extends Thread {
 					dReader.cleanDumpFile();
 
 					// Check if ERROR occurs
-					if (dumpData.contains(":::ERROR")) {
+					if (dumpData.contains("RCA_errorMsg:")) {
 						stateCounter++;
 						// Output the trace
 						JSExecutionTracer.generateTrace(new Integer(
@@ -45,6 +47,9 @@ public class DumpFileThread extends Thread {
 						RCAPlugin rca = new RCAPlugin(FileManager.getProxyTraceExecutiontraceFolder(), FileManager.getProxyJsSourceFolder());
 						rca.rcaStart(errorIdCounter);
 						errorIdCounter++;
+						
+						// clean points array for new errors
+						//JSExecutionTracer.points = new JSONArray();
 					}
 				}
 
