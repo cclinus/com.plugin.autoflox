@@ -4,9 +4,7 @@
 
 $data = file_get_contents("php://input");
 
-$file = fopen("dump_data","a");
-echo fwrite($file,$data);
-fclose($file);
+file_put_contents("dump_data", $data, FILE_APPEND | LOCK_EX);
 
 chmod("dump_data", 0777);
 
