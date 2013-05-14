@@ -1,5 +1,6 @@
 package com.plugin.autoflox.action;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.eclipse.jface.action.IAction;
@@ -39,6 +40,12 @@ public class AutofloxStopAction implements IWorkbenchWindowActionDelegate {
 			AutofloxViewUpdateThread.terminate();
 			// Clean console
 			AutofloxView.cleanConsole();
+			// Kill firefox
+			try {
+				Runtime.getRuntime().exec("killall firefox");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

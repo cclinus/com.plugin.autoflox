@@ -73,9 +73,19 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 							+ FileManager.getProjectFolder() + " "
 							+ FileManager.getProxyFolder();
 					System.out.println("Run Cmd: " + runCmd);
-					ProcessManager.autofloxProcess = Runtime.getRuntime()
-							.exec(runCmd);
+					ProcessManager.autofloxProcess = Runtime.getRuntime().exec(
+							runCmd);
+
+					Thread.sleep(1000);
+
+					// Launch Firefox process, assuming in Linux and firefox
+					// installed
+					String ffCmd = "firefox -no-remote -url http://localhost/autoflox_proxy/instrumented/";
+					Runtime.getRuntime().exec(ffCmd);
+
 				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 
