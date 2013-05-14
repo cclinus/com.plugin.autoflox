@@ -72,7 +72,7 @@ public class RCAPlugin {
 			}
 
 			String fullPath = traceFolder + "/" + child.getName();
-			
+
 			System.out.println("Trace File for Error: " + fullPath);
 
 			String errorMessage = rca.findErrorMsg(fullPath);
@@ -80,13 +80,13 @@ public class RCAPlugin {
 			// Create entry error item
 			String executionTrace = String.valueOf(errorIdCounter) + ":::"
 					+ "1:::" + errorMessage + ":::";
-			
+
 			PrintWriter out = new PrintWriter(new BufferedWriter(
 					new FileWriter(FileManager.getTableResultFile(), true)));
 			out.println(executionTrace);
 			out.close();
 
-			System.err.println("error msg:"+errorMessage);
+			System.err.println("error msg:" + errorMessage);
 
 			if (errorMessage != null) {
 				// Determine if it is of the form "<something> is null"
@@ -104,7 +104,7 @@ public class RCAPlugin {
 					// Find the direct DOM access
 					boolean GEBIDfound = rca.findGEBID(fullPath, initNullVar,
 							errorIdCounter);
-					
+
 					// Clean up the trace as the error is analysed already.
 					new File(fullPath).delete();
 

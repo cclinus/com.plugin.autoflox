@@ -88,7 +88,8 @@ public class GEBIDLineFinder {
 	 * the corresponding FunctionTrace
 	 * <p>
 	 * Can only be called once
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public void findGEBIDLine() throws IOException {
 
@@ -216,12 +217,15 @@ public class GEBIDLineFinder {
 				if (errorTraceInfo.length >= 1) {
 					filePath = errorTraceInfo[0];
 					filePath = filePath.replace("." + currFunction, "");
-					filePath = filePath.replace(FileManager.getProxyInstrumentedFolder(), FileManager.getProjectFolder());
+					filePath = filePath.replace(
+							FileManager.getProxyInstrumentedFolder(),
+							FileManager.getProjectFolder());
 					executionTraceLine += filePath + ":::";
 				}
 
 				// Calculate line NO. regarding on the entire file
-				int lineNoInFile = getLineNOInFile(filePath, getJSFuncDecl(ft), getFunctionLineno(ft));
+				int lineNoInFile = getLineNOInFile(filePath, getJSFuncDecl(ft),
+						getFunctionLineno(ft));
 				executionTraceLine += lineNoInFile + ":::";
 
 				System.err.println("ExecutionTrace: " + executionTraceLine);
@@ -508,6 +512,11 @@ public class GEBIDLineFinder {
 					System.exit(-1);
 				}
 			}
+
+			fstream.close();
+			din.close();
+			br.close();
+
 		} catch (Exception e) {
 			System.out.println("!Error reading function file" + e.toString());
 			System.exit(-1);

@@ -25,10 +25,11 @@ public class AutofloxRunner {
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 
-		String projectFolder = args[0];//"/home/cclinus/runtime-EclipseApplication/webTest/";//
-		String proxyFolder = args[1];//"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";// args[1];
+		String projectFolder = args[0]; //"/home/cclinus/runtime-EclipseApplication/webTest/";//
+		String proxyFolder = args[1]; //"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";// args[1];
 
 		/** For testing **/
+//		System.out.println("Runner starts:");
 //		String sbinFolder = "/home/cclinus/workspace/com.plugin.autoflox/sbin/";
 //		FileManager.build(projectFolder, proxyFolder, sbinFolder);
 //		FileManager.initFolderStruc();
