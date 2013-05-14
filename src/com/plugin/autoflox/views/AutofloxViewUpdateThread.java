@@ -30,7 +30,7 @@ public class AutofloxViewUpdateThread extends Thread {
 	public void run() {
 		runFlag = true;
 		while (runFlag) {
-			// Check if the file exists
+			// Check if the gui table result file exists
 			File file = new File(FileManager.getTableResultFile());
 			if (file.exists()) {
 
@@ -61,7 +61,7 @@ public class AutofloxViewUpdateThread extends Thread {
 				}
 
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -75,8 +75,11 @@ public class AutofloxViewUpdateThread extends Thread {
 
 	private static void updateViewTable(final String itemContent) {
 
-		// itemContent is the format:
-		// PathToFile:::FunctionName:::Type+LineNo
+		/**
+		 *  itemContent is the format:
+		 *	PathToFile:::FunctionName:::Type+LineNo
+		 */ 
+		System.out.println("Adding from tableResult: " + itemContent);
 		final String[] itemColums = itemContent.split(":::");
 
 		Display display = Display.getCurrent();
@@ -87,7 +90,6 @@ public class AutofloxViewUpdateThread extends Thread {
 			@Override
 			public void run() {
 				synchronized (this) {
-					System.out.println("Add new item to table");
 
 					final String itemId = itemColums[0];
 					String itemType = itemColums[1];

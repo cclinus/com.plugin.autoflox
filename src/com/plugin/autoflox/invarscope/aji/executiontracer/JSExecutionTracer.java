@@ -109,7 +109,8 @@ public class JSExecutionTracer{
 			file.close();
 			
 			System.out.println("Points before cleaned: \n" + points.toString());
-			points = new JSONArray();
+			// We dont need empty points array now since we want to trace multiple errors
+			//points = new JSONArray();
 
 		} catch (Exception e) {
 			e.printStackTrace();

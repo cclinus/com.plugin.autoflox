@@ -16,6 +16,8 @@ import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxRunner {
 
+	public static final boolean DEBUG = false;
+
 	/**
 	 * @param 1: js source folder where all js and html files are located:
 	 *        sourceFolderPath(projectFolderPath) 2: proxyFolderPath
@@ -25,19 +27,23 @@ public class AutofloxRunner {
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 
-		String projectFolder = args[0]; //"/home/cclinus/runtime-EclipseApplication/webTest/";//
-		String proxyFolder = args[1]; //"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";// args[1];
-
-		/** For testing **/
-//		System.out.println("Runner starts:");
-//		String sbinFolder = "/home/cclinus/workspace/com.plugin.autoflox/sbin/";
-//		FileManager.build(projectFolder, proxyFolder, sbinFolder);
-//		FileManager.initFolderStruc();
-		/** End of testing **/
-
-		// Set up FileManager
-		FileManager.build(projectFolder, proxyFolder, null);
-
+		if (!DEBUG) {
+			String projectFolder = args[0];// "/home/cclinus/runtime-EclipseApplication/webTest/";//
+			String proxyFolder = args[1];// "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
+											// args[1];
+			// Set up FileManager
+			FileManager.build(projectFolder, proxyFolder, null);
+		} else {
+			/** For testing **/
+			String projectFolder = "/home/cclinus/runtime-EclipseApplication/webTest/";//
+			String proxyFolder = "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
+			System.out.println("Runner starts:");
+			String sbinFolder = "/home/cclinus/workspace/com.plugin.autoflox/sbin/";
+			FileManager.build(projectFolder, proxyFolder, sbinFolder);
+			FileManager.initFolderStruc();
+			/** End of testing **/
+		}
+		
 		modifyJsToolFiles();
 		File projectFolderFile = new File(FileManager.getProjectFolder());
 		traverseAndInstrument(projectFolderFile,

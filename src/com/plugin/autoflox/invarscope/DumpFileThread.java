@@ -1,11 +1,12 @@
 package com.plugin.autoflox.invarscope;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import com.plugin.autoflox.invarscope.aji.executiontracer.JSExecutionTracer;
-import com.plugin.autoflox.rca.AutofloxRunner;
 import com.plugin.autoflox.rca.RCAPlugin;
 import com.plugin.autoflox.service.FileManager;
 
@@ -57,10 +58,20 @@ public class DumpFileThread extends Thread {
 								FileManager.getProxyJsSourceFolder());
 						rca.rcaStart(errorIdCounter);
 						errorIdCounter++;
+						// Clean the point array by removing the last finished error
+						JSONArray temJSONArray = new JSONArray();
+						for(int j = 0; j < JSExecutionTracer.points.length(); j++){
+							if(!JSExecutionTracer.points.get(j).toString().contains(":::ERROR")){
+								temJSONArray.put(JSExecutionTracer.points.get(j));
+							}
+						}
+						JSExecutionTracer.points = temJSONArray;
 					}
 				}
 
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 
