@@ -2,7 +2,7 @@ window.xhr = new XMLHttpRequest();
 window.buffer = new Array();
 function send(value) {
 	window.buffer.push(value);
-	if (window.buffer.length > 10 || value.indexOf(':::ERROR') !== -1) {
+	if (value.indexOf(':::ERROR') !== -1) {
 		sendReally();
 	}
 }

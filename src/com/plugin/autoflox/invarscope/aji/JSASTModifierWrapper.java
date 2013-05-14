@@ -47,7 +47,7 @@ public class JSASTModifierWrapper {
 		modifier.setInstrumentAsyncs(val);
 	}
 
-	/*
+	/**
 	 * Take sourceContent which is the actual code, instrument it and save to
 	 * scopeName(file path)
 	 */
@@ -61,7 +61,7 @@ public class JSASTModifierWrapper {
 		// FIXME Find a better way to detect html and js files
 		if (scopeName.contains(".html") || scopeName.contains(".php")) {
 			
-			System.out.println("HTML detected");
+			//System.out.println("HTML detected");
 			
 			htmlFound = true;
 			// Parse html node and get script node
@@ -100,7 +100,7 @@ public class JSASTModifierWrapper {
 
 		} else if(scopeName.contains(".js")){
 			
-			System.out.println("Javascript detected");
+			//System.out.println("Javascript detected");
 			
 			FileInputStream inputStream = new FileInputStream(sourceFilePath);
 			jsCode = IOUtils.toString(inputStream);
@@ -251,9 +251,6 @@ public class JSASTModifierWrapper {
 			FileWriter fstream = new FileWriter(fileName);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(s);
-
-			System.out.println("Instrumented to " + fileName);
-
 			// Close the output stream
 			out.close();
 		} catch (Exception e) {// Catch exception if any

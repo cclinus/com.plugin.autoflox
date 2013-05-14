@@ -20,9 +20,11 @@ public class DumpFileThread extends Thread {
 	}
 
 	public void run() {
+		// Used to assign each error an id so an error tree structure can be
+		// constructed.
 		int errorIdCounter = 0;
 		while (true) {
-			System.out.println("Reading dumpData");
+			// System.out.println("Reading dumpData");
 			try {
 
 				// Read from dump file to point array
@@ -37,19 +39,24 @@ public class DumpFileThread extends Thread {
 					dReader.cleanDumpFile();
 
 					// Check if ERROR occurs
-					if (dumpData.contains("RCA_errorMsg:")) {
+					if (dumpData.contains(":::ERROR")) {
 						stateCounter++;
 						// Output the trace
 						JSExecutionTracer.generateTrace(new Integer(
-								stateCounter).toString(), FileManager.getProxyTraceFolder());
-						
+								stateCounter).toString(), FileManager
+								.getProxyTraceFolder());
+					}
+
+					// Check if trace folder is empty
+					// If not, we need analyse the error from traces
+					if (!FileManager.isDirectoryEmpty(FileManager
+							.getProxyTraceFolder())) {
 						// rca analysis
-						RCAPlugin rca = new RCAPlugin(FileManager.getProxyTraceExecutiontraceFolder(), FileManager.getProxyJsSourceFolder());
+						RCAPlugin rca = new RCAPlugin(
+								FileManager.getProxyTraceExecutiontraceFolder(),
+								FileManager.getProxyJsSourceFolder());
 						rca.rcaStart(errorIdCounter);
 						errorIdCounter++;
-						
-						// clean points array for new errors
-						//JSExecutionTracer.points = new JSONArray();
 					}
 				}
 
@@ -58,7 +65,7 @@ public class DumpFileThread extends Thread {
 			}
 
 			try {
-				Thread.sleep(500);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

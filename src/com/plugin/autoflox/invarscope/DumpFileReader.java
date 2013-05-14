@@ -30,13 +30,11 @@ public class DumpFileReader {
 		File file = new File(this.dumpFilePath);
 		if (file.exists()) {
 			FileInputStream inputStream = new FileInputStream(this.dumpFilePath);
-			try {
-				dumpFileData = IOUtils.toString(inputStream);
-			} finally {
-				inputStream.close();
-			}
+			dumpFileData = IOUtils.toString(inputStream);
+			inputStream.close();
 			return dumpFileData;
 		}
+		file = null;
 		return null;
 	}
 

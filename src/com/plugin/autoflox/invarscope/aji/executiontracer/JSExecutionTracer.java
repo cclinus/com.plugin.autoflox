@@ -107,7 +107,8 @@ public class JSExecutionTracer{
 			file.write('\n');
 			file.write(trace.getData(points));
 			file.close();
-
+			
+			System.out.println("Points before cleaned: \n" + points.toString());
 			points = new JSONArray();
 
 		} catch (Exception e) {

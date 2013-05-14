@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 import com.plugin.autoflox.service.FileManager;
 
@@ -25,7 +26,7 @@ public class RCAPlugin {
 	}
 
 	public void rcaStart(int errorIdCounter) throws IOException {
-		System.out.println("\n\n*****AutoFLox*******");
+		System.out.println("\n\n*****AutoFLox Traceback*******");
 		// Note: Attach a variable to the error trace containing the
 		// error message
 
@@ -61,7 +62,9 @@ public class RCAPlugin {
 		boolean lineFound = false;
 		File dir = new File(traceFolder);
 		RootCauseAnalyzer rca = new RootCauseAnalyzer(jsSourceFolder);
-		for (File child : dir.listFiles()) {
+		File[] traceDirFiles = dir.listFiles();
+		Arrays.sort(traceDirFiles);
+		for (File child : traceDirFiles) {
 			// Ignore the self and parent aliases, and files beginning with "."
 			if (".".equals(child.getName()) || "..".equals(child.getName())
 					|| child.getName().indexOf(".") == 0) {
@@ -69,6 +72,8 @@ public class RCAPlugin {
 			}
 
 			String fullPath = traceFolder + "/" + child.getName();
+			
+			System.out.println("Trace File for Error: " + fullPath);
 
 			String errorMessage = rca.findErrorMsg(fullPath);
 
@@ -81,7 +86,7 @@ public class RCAPlugin {
 			out.println(executionTrace);
 			out.close();
 
-			// System.err.println("error msg:"+errorMessage);
+			System.err.println("error msg:"+errorMessage);
 
 			if (errorMessage != null) {
 				// Determine if it is of the form "<something> is null"
@@ -99,6 +104,9 @@ public class RCAPlugin {
 					// Find the direct DOM access
 					boolean GEBIDfound = rca.findGEBID(fullPath, initNullVar,
 							errorIdCounter);
+					
+					// Clean up the trace as the error is analysed already.
+					new File(fullPath).delete();
 
 					if (GEBIDfound) {
 						System.out.println("Direct DOM access found!\n");

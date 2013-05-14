@@ -25,14 +25,19 @@ public class AutofloxRunner {
 	 */
 	public static void main(String[] args) throws IOException, SAXException {
 
-		String projectFolder = args[0];// "/home/cclinus/runtime-EclipseApplication/webTest/";//
-		String proxyFolder = args[1];// "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//args[1];
+		String projectFolder = args[0];//"/home/cclinus/runtime-EclipseApplication/webTest/";//
+		String proxyFolder = args[1];//"/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";// args[1];
+
+		/** For testing **/
+//		String sbinFolder = "/home/cclinus/workspace/com.plugin.autoflox/sbin/";
+//		FileManager.build(projectFolder, proxyFolder, sbinFolder);
+//		FileManager.initFolderStruc();
+		/** End of testing **/
 
 		// Set up FileManager
 		FileManager.build(projectFolder, proxyFolder, null);
 
 		modifyJsToolFiles();
-
 		File projectFolderFile = new File(FileManager.getProjectFolder());
 		traverseAndInstrument(projectFolderFile,
 				FileManager.getProjectFolder(),
@@ -48,7 +53,7 @@ public class AutofloxRunner {
 		if (node.isFile()) {
 			if (node.getAbsolutePath().toLowerCase().contains(".js")
 					|| node.getAbsolutePath().toLowerCase().contains(".html")) {
-				System.out.println("Instrumenting "+node.getAbsolutePath());
+				// System.out.println("Instrumenting "+node.getAbsolutePath());
 				initInstrumentation(node.getAbsolutePath(), projectFolder,
 						proxyFolder);
 			}
@@ -112,15 +117,14 @@ public class AutofloxRunner {
 		if (addVarNoAsyFile.exists()) {
 			FileInputStream inputStream = new FileInputStream(
 					addVarNoAsyFilePath);
-			try {
-				addVarNoAsyContent = IOUtils.toString(inputStream);
-				// FIXME Need a better way to deal with constant
-				addVarNoAsyContent = addVarNoAsyContent.replace(
-						"'receiveData.php'",
-						"'/autoflox_proxy/bin/receiveData.php'");
-			} finally {
-				inputStream.close();
-			}
+
+			addVarNoAsyContent = IOUtils.toString(inputStream);
+			// FIXME Need a better way to deal with constant
+			addVarNoAsyContent = addVarNoAsyContent.replace(
+					"'receiveData.php'",
+					"'/autoflox_proxy/bin/receiveData.php'");
+			inputStream.close();
+
 			FileWriter fstream = new FileWriter(addVarNoAsyFilePath);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(addVarNoAsyContent);
