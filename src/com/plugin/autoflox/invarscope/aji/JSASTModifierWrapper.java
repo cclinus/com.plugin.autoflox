@@ -230,10 +230,7 @@ public class JSASTModifierWrapper {
 			/* recurse through AST */
 			ast.visit(modifier);
 
-			// if (htmlFound == true) {
 			modifier.finish(ast);
-			// htmlFound = false;
-			// }
 
 			/* clean up */
 			Context.exit();

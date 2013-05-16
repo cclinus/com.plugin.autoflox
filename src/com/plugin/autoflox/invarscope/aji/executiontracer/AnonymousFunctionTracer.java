@@ -31,6 +31,17 @@ public class AnonymousFunctionTracer {
 		}
 		return null;
 	}
+	
+	public static AnonymousFunctionEntity getAnonymousFunctionEntityByName(String funcName){
+		for (int i = 0; i < AnonymousFunctionTracer.AnonymousFunctionList
+				.size(); i++) {
+			if (AnonymousFunctionTracer.AnonymousFunctionList.get(i)
+					.getFunctionName().equals(funcName)) {
+				return AnonymousFunctionTracer.AnonymousFunctionList.get(i);
+			}
+		}
+		return null;
+	}
 
 	public static boolean isAnonymousFunctionAdded(String fileName,
 			int scriptTagNo, int relativeLineNoInTag) {

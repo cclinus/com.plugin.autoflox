@@ -6,6 +6,8 @@ import java.util.*;
 
 import org.mozilla.javascript.*;
 
+import com.plugin.autoflox.invarscope.aji.executiontracer.AnonymousFunctionEntity;
+import com.plugin.autoflox.invarscope.aji.executiontracer.AnonymousFunctionTracer;
 import com.plugin.autoflox.service.FileManager;
 
 public class GEBIDLineFinder {
@@ -223,9 +225,22 @@ public class GEBIDLineFinder {
 					executionTraceLine += filePath + ":::";
 				}
 
-				// Calculate line NO. regarding on the entire file
-				int lineNoInFile = getLineNOInFile(filePath, getJSFuncDecl(ft),
-						getFunctionLineno(ft));
+				/**
+				 * Justin: Calculate line NO. regarding on the entire file Here
+				 * we also check function type (anonymous or not)
+				 */
+				String currentFunctionName = getFunctionName(ft);
+				int lineNoInFile = 0;
+				if (currentFunctionName.contains("anonymous-")) {
+					lineNoInFile = getLineNoOfAnonymousFunctionInFile(
+							filePath,
+							currentFunctionName,
+							AnonymousFunctionTracer
+									.getAnonymousFunctionEntityByName(currentFunctionName));
+				} else {
+					lineNoInFile = getLineNoOfNormalFunctionInFile(filePath,
+							getJSFuncDecl(ft), getFunctionLineno(ft));
+				}
 				executionTraceLine += lineNoInFile + ":::";
 
 				System.err.println("ExecutionTrace: " + executionTraceLine);
@@ -407,8 +422,55 @@ public class GEBIDLineFinder {
 		}
 	}
 
-	public int getLineNOInFile(String path, String funcName, int lineInFunc)
-			throws IOException {
+	private int getLineNoOfAnonymousFunctionInFile(String path,
+			String currentFunctionName,
+			AnonymousFunctionEntity anonymousFunctionEntity) throws IOException {
+
+		int lineCounter = 1;
+		int scriptTagCounter = 0;
+		int scriptTagNo = anonymousFunctionEntity.getScriptTagNo();
+		int relativeLineNoInTag = anonymousFunctionEntity
+				.getRelativeLineNoInTag();
+
+		File file = new File(path);
+		if (file.exists()) {
+
+			InputStream fis = null;
+			BufferedReader br = null;
+			String line;
+
+			try {
+				fis = new FileInputStream(path);
+
+				br = new BufferedReader(new InputStreamReader(fis,
+						Charset.forName("UTF-8")));
+				// Check if it is a js file
+				if (path.contains(".js")) {
+					return relativeLineNoInTag + 1;
+				} else {
+					while ((line = br.readLine()) != null) {
+						if (line.contains("<script")) {
+							if (scriptTagCounter == scriptTagNo) {
+								fis.close();
+								br.close();
+								return lineCounter + relativeLineNoInTag;
+							}
+							scriptTagCounter++;
+						}
+						lineCounter++;
+					}
+				}
+			} finally {
+				br.close();
+				fis.close();
+			}
+		}
+
+		return 0;
+	}
+
+	private int getLineNoOfNormalFunctionInFile(String path, String funcName,
+			int lineInFunc) throws IOException {
 		int lineCounter = 1;
 		File file = new File(path);
 		if (file.exists()) {

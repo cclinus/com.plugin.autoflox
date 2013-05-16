@@ -16,7 +16,7 @@ import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxRunner {
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 
 	/**
 	 * @param 1: js source folder where all js and html files are located:

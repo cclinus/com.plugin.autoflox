@@ -17,6 +17,10 @@ public class AnonymousFunctionEntity {
 		return this.id;
 	}
 	
+	public String getFunctionName(){
+		return "anonymous-" + this.id;
+	}
+	
 	public String getFileName(){
 		return this.fileName;
 	}
