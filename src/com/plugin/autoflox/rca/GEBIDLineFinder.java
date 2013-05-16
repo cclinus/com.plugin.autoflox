@@ -423,7 +423,7 @@ public class GEBIDLineFinder {
 				br = new BufferedReader(new InputStreamReader(fis,
 						Charset.forName("UTF-8")));
 				while ((line = br.readLine()) != null) {
-					if (line.contains(funcName)) {
+					if (line.contains("function " + funcName)) {
 						fis.close();
 						br.close();
 						return lineCounter + lineInFunc;

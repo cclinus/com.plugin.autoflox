@@ -16,7 +16,7 @@ import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxRunner {
 
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	/**
 	 * @param 1: js source folder where all js and html files are located:
@@ -28,15 +28,14 @@ public class AutofloxRunner {
 	public static void main(String[] args) throws IOException, SAXException {
 
 		if (!DEBUG) {
-			String projectFolder = args[0];// "/home/cclinus/runtime-EclipseApplication/webTest/";//
-			String proxyFolder = args[1];// "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
-											// args[1];
+			String projectFolder = args[0];
+			String proxyFolder = args[1];
 			// Set up FileManager
 			FileManager.build(projectFolder, proxyFolder, null);
 		} else {
 			/** For testing **/
-			String projectFolder = "/home/cclinus/runtime-EclipseApplication/webTest/";//
-			String proxyFolder = "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";//
+			String projectFolder = "/home/cclinus/runtime-EclipseApplication/webTest/";
+			String proxyFolder = "/home/cclinus/runtime-EclipseApplication/autoflox_proxy/";
 			System.out.println("Runner starts:");
 			String sbinFolder = "/home/cclinus/workspace/com.plugin.autoflox/sbin/";
 			FileManager.build(projectFolder, proxyFolder, sbinFolder);

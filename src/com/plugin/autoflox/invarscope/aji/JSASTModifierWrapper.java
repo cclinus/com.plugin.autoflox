@@ -28,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.plugin.autoflox.invarscope.aji.executiontracer.AnonymousFunctionTracer;
 import com.plugin.autoflox.rca.AutofloxRunner;
 import com.plugin.autoflox.service.FileManager;
 
@@ -57,12 +58,13 @@ public class JSASTModifierWrapper {
 		String instrumentedCode = null;
 
 		String jsCode;
+		
+		// Log path for potential anonymous functions
+		AnonymousFunctionTracer.fileName = sourceFilePath;
 
 		// FIXME Find a better way to detect html and js files
-		if (scopeName.contains(".html") || scopeName.contains(".php")) {
-			
-			//System.out.println("HTML detected");
-			
+		if (scopeName.contains(".html")) {
+
 			htmlFound = true;
 			// Parse html node and get script node
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory
@@ -73,38 +75,42 @@ public class JSASTModifierWrapper {
 				builder = builderFactory.newDocumentBuilder();
 				FileInputStream inputStream = new FileInputStream(
 						sourceFilePath);
+				
 				Document document = builder.parse(inputStream);
 				inputStream.close();
 				NodeList rootElement = document.getElementsByTagName("script");
 
 				// Traverse script tag list
 				for (int i = 0; i < rootElement.getLength(); i++) {
+					
+					// Log for potential anonymous functions. 
+					AnonymousFunctionTracer.scriptTagNo = i;
 
 					Node jsNode = rootElement.item(i);
 					String nodeString = jsNode.getTextContent();
 
-					if ( nodeString.length() > 0 ) {
+					if (nodeString.length() > 0) {
 						// Make some change on each content of script tag
 						nodeString = modifyJS(nodeString, scopeName);
 						jsNode.setTextContent(nodeString);
 					}
 
 					instrumentedCode = convertDomToString(document);
-					
-					// System.out.println(nodeString);
 				}
 
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			}
 
-		} else if(scopeName.contains(".js")){
+		} else if (scopeName.contains(".js")) {
 			
-			//System.out.println("Javascript detected");
-			
+			// Log for potential anonymous functions: in js file, tag id is always 0. 
+			AnonymousFunctionTracer.scriptTagNo = 0;
+
 			FileInputStream inputStream = new FileInputStream(sourceFilePath);
 			jsCode = IOUtils.toString(inputStream);
 			inputStream.close();
+			
 			// If it is javascript file
 			instrumentedCode = modifyJS(jsCode, scopeName);
 		}
@@ -145,8 +151,8 @@ public class JSASTModifierWrapper {
 			/* START */
 			rootCounter++;
 			try {
-				File file = new File(FileManager.getProxyJsSourceFolder() + "/root"
-						+ rootCounter + ".js");
+				File file = new File(FileManager.getProxyJsSourceFolder()
+						+ "/root" + rootCounter + ".js");
 				if (!file.exists()) {
 					file.createNewFile();
 				}
@@ -168,9 +174,12 @@ public class JSASTModifierWrapper {
 			/* START */
 			String inputCopy = input;
 
+			// FIXME Here also need to dump anonymous function
+
 			int indexOfFuncString = inputCopy.indexOf("function ");
 			while (indexOfFuncString != -1) {
 				String sub = inputCopy.substring(indexOfFuncString);
+
 				int nextOpenParen = sub.indexOf("(");
 				String funcName = sub.substring(9, nextOpenParen); // "function "
 																	// has 9
@@ -191,12 +200,11 @@ public class JSASTModifierWrapper {
 				}
 
 				String code = sub.substring(0, endIndex + 1);
-				// System.out.println(code);
 
 				try {
 					funcName = funcName.trim();
-					File file = new File(FileManager.getProxyJsSourceFolder() + "/" + funcName
-							+ ".js");
+					File file = new File(FileManager.getProxyJsSourceFolder()
+							+ "/" + funcName + ".js");
 					if (!file.exists()) {
 						file.createNewFile();
 					}
@@ -254,27 +262,31 @@ public class JSASTModifierWrapper {
 			// Close the output stream
 			out.close();
 		} catch (Exception e) {// Catch exception if any
-			System.err.println("Instrumentation writeTextFile Error: " + e.getMessage());
+			System.err.println("Instrumentation writeTextFile Error: "
+					+ e.getMessage());
 		}
 
 	}
-	
-	public static String convertDomToString(Document doc) {
-	    try {
-	        StringWriter sw = new StringWriter();
-	        TransformerFactory tf = TransformerFactory.newInstance();
-	        Transformer transformer = tf.newTransformer();
-	        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-	        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
-	        transformer.transform(new DOMSource(doc), new StreamResult(sw));
-	        // Clean up junk chars in xml before turning to html code
-	        return "<!DOCTYPE html>" + sw.toString().replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&");
-	    } catch (Exception ex) {
-	        throw new RuntimeException("Error converting to String", ex);
-	    }
+	public static String convertDomToString(Document doc) {
+		try {
+			StringWriter sw = new StringWriter();
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+					"yes");
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+			transformer.transform(new DOMSource(doc), new StreamResult(sw));
+			// Clean up junk chars in xml before turning to html code
+			return "<!DOCTYPE html>"
+					+ sw.toString().replace("&gt;", ">").replace("&lt;", "<")
+							.replace("&amp;", "&");
+		} catch (Exception ex) {
+			throw new RuntimeException("Error converting to String", ex);
+		}
 	}
 
 }

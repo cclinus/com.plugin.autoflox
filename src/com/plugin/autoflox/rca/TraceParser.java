@@ -145,7 +145,8 @@ public class TraceParser {
 
 					// Do not add anonymous functions
 					if (ft.f_decl.f_name.startsWith("anonymous")) {
-						continue;
+						// Justin: Now we handle anonymous function
+						//continue;
 					}
 					function_traces.add(ft);
 				}
