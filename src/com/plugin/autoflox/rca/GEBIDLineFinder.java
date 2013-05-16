@@ -216,6 +216,7 @@ public class GEBIDLineFinder {
 				// Get path
 				String[] errorTraceInfo = ft.f_decl.ppt_decl.split(":::");
 				String filePath = null;
+
 				if (errorTraceInfo.length >= 1) {
 					filePath = errorTraceInfo[0];
 					filePath = filePath.replace("." + currFunction, "");
@@ -236,19 +237,17 @@ public class GEBIDLineFinder {
 							filePath,
 							currentFunctionName,
 							AnonymousFunctionTracer
-									.getAnonymousFunctionEntityByName(currentFunctionName));
+									.getAnonymousFunctionEntityByName(currentFunctionName),
+							getFunctionLineno(ft));
 				} else {
 					lineNoInFile = getLineNoOfNormalFunctionInFile(filePath,
 							getJSFuncDecl(ft), getFunctionLineno(ft));
 				}
 				executionTraceLine += lineNoInFile + ":::";
-
 				System.err.println("ExecutionTrace: " + executionTraceLine);
-
+				
 				// Update traceTable
 				this.traceTable.add(executionTraceLine);
-				System.err.println("Trace table size: "
-						+ this.traceTable.size());
 
 				// System.err.println("Line:"+getFunctionLineno(ft));
 				// System.err.println("Func Declaration:"+getJSFuncDecl(ft));
@@ -424,7 +423,8 @@ public class GEBIDLineFinder {
 
 	private int getLineNoOfAnonymousFunctionInFile(String path,
 			String currentFunctionName,
-			AnonymousFunctionEntity anonymousFunctionEntity) throws IOException {
+			AnonymousFunctionEntity anonymousFunctionEntity, int lineInFunc)
+			throws IOException {
 
 		int lineCounter = 1;
 		int scriptTagCounter = 0;
@@ -446,14 +446,15 @@ public class GEBIDLineFinder {
 						Charset.forName("UTF-8")));
 				// Check if it is a js file
 				if (path.contains(".js")) {
-					return relativeLineNoInTag + 1;
+					return relativeLineNoInTag + 1 + lineInFunc;
 				} else {
 					while ((line = br.readLine()) != null) {
 						if (line.contains("<script")) {
 							if (scriptTagCounter == scriptTagNo) {
 								fis.close();
 								br.close();
-								return lineCounter + relativeLineNoInTag;
+								return lineCounter + relativeLineNoInTag
+										+ lineInFunc;
 							}
 							scriptTagCounter++;
 						}
@@ -473,8 +474,8 @@ public class GEBIDLineFinder {
 			int lineInFunc) throws IOException {
 		int lineCounter = 1;
 		File file = new File(path);
+		
 		if (file.exists()) {
-
 			InputStream fis = null;
 			BufferedReader br = null;
 			String line;
@@ -485,9 +486,7 @@ public class GEBIDLineFinder {
 				br = new BufferedReader(new InputStreamReader(fis,
 						Charset.forName("UTF-8")));
 				while ((line = br.readLine()) != null) {
-					if (line.contains("function " + funcName)) {
-						fis.close();
-						br.close();
+					if (line.contains(funcName)) {
 						return lineCounter + lineInFunc;
 					}
 					lineCounter++;
@@ -536,7 +535,6 @@ public class GEBIDLineFinder {
 		int lineno = getFunctionLineno(ft);
 		String strLine = null;
 		try {
-			System.out.println("Current function name:" + current_function);
 			FileInputStream fstream = new FileInputStream(JS_FILES_FOLDER + "/"
 					+ current_function + ".js");
 			DataInputStream din = new DataInputStream(fstream);
