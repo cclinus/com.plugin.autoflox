@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 
+import com.plugin.autoflox.rca.RootCauseAnalyzer;
+
 public class DumpFileReader {
 
-	private String dumpFilePath;
+	private String binTraceFolder;
 
 	public static void main(String[] args) {
 		DumpFileReader dReader = new DumpFileReader(
@@ -21,25 +24,32 @@ public class DumpFileReader {
 		}
 	}
 
-	public DumpFileReader(String dumpFilePath) {
-		this.dumpFilePath = dumpFilePath;
+	public DumpFileReader(String binTraceFolder) {
+		this.binTraceFolder = binTraceFolder;
 	}
 
 	public String readDumpFile() throws IOException {
 		String dumpFileData;
-		File file = new File(this.dumpFilePath);
-		if (file.exists()) {
-			FileInputStream inputStream = new FileInputStream(this.dumpFilePath);
+		File dir = new File(this.binTraceFolder);
+		File[] dumpTraceDirFiles = dir.listFiles();
+		if (dumpTraceDirFiles.length > 0) {
+			Arrays.sort(dumpTraceDirFiles);
+			FileInputStream inputStream = new FileInputStream(
+					dumpTraceDirFiles[0]);
 			dumpFileData = IOUtils.toString(inputStream);
 			inputStream.close();
+			
+			cleanDumpFile(dumpTraceDirFiles[0].getAbsolutePath());
+			System.gc();
+			
 			return dumpFileData;
 		}
-		file = null;
+		System.gc();
 		return null;
 	}
 
-	public void cleanDumpFile() throws FileNotFoundException {
-		File file = new File(this.dumpFilePath);
+	private void cleanDumpFile(String currentDumpFilePath) throws FileNotFoundException {
+		File file = new File(currentDumpFilePath);
 
 		if (file.exists()) {
 			file.delete();

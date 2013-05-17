@@ -49,6 +49,10 @@ public class FileManager {
 	public static String getProxyBinFolder() {
 		return FileManager.proxyFolder + "bin/";
 	}
+	
+	public static String getProxyBinTraceFolder(){
+		return FileManager.proxyFolder + "bin/dumpTrace/";
+	}
 
 	public static String getProxyInstrumentedFolder() {
 		return FileManager.proxyFolder + "instrumented/";
@@ -62,6 +66,10 @@ public class FileManager {
 		return FileManager.proxyFolder + "trace/";
 	}
 
+	public static String getTableResultFolder() {
+		return FileManager.proxyFolder + "bin/errorResult/";
+	}
+	
 	public static String getProxyTraceExecutiontraceFolder() {
 		return FileManager.proxyFolder + "trace/executiontrace/";
 	}
@@ -76,14 +84,6 @@ public class FileManager {
 
 	public static String getReceiveDataScript() {
 		return FileManager.proxyFolder + "bin/receiveData.php";
-	}
-
-	public static String getDumpDataFile() {
-		return FileManager.proxyFolder + "bin/dump_data";
-	}
-
-	public static String getTableResultFile() {
-		return FileManager.proxyFolder + "bin/tableResult";
 	}
 
 	public static void initFolderStruc() throws IOException {
@@ -108,6 +108,12 @@ public class FileManager {
 		File binFolderFile = new File(FileManager.getProxyBinFolder());
 		binFolderFile.mkdirs();
 		binFolderFile.setWritable(true, false);
+		File dumpTraceFolderFile = new File(FileManager.getProxyBinTraceFolder());
+		dumpTraceFolderFile.mkdirs();
+		dumpTraceFolderFile.setWritable(true, false);
+		File tableResultFolder = new File(FileManager.getTableResultFolder());
+		tableResultFolder.mkdirs();
+		tableResultFolder.setWritable(true, false);
 
 		// Copy receiveData.php to workspace/autoflox_proxy/instrumented
 		File receiveDataSource = new File(FileManager.getSbinReceiveData());

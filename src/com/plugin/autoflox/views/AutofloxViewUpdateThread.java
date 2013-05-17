@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.SWT;
@@ -31,26 +32,25 @@ public class AutofloxViewUpdateThread extends Thread {
 		runFlag = true;
 		while (runFlag) {
 			// Check if the gui table result file exists
-			File file = new File(FileManager.getTableResultFile());
-			if (file.exists()) {
-
+			File dir = new File(FileManager.getTableResultFolder());
+			File[] tableResultItems = dir.listFiles();
+			if (tableResultItems != null && tableResultItems.length > 0) {
+				Arrays.sort(tableResultItems);
 				InputStream fis;
 				BufferedReader br;
 				String line;
 
 				try {
-					fis = new FileInputStream(FileManager.getTableResultFile());
+					fis = new FileInputStream(tableResultItems[0]);
 
 					br = new BufferedReader(new InputStreamReader(fis,
 							Charset.forName("UTF-8")));
 					while ((line = br.readLine()) != null) {
 						updateViewTable(line);
-						// System.err.println(line);
 					}
 
 					// Clean the file
-					file = new File(FileManager.getTableResultFile());
-					file.delete();
+					tableResultItems[0].delete();
 
 					fis.close();
 					br.close();
@@ -61,7 +61,7 @@ public class AutofloxViewUpdateThread extends Thread {
 				}
 
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

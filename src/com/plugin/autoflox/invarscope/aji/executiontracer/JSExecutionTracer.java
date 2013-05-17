@@ -98,7 +98,6 @@ public class JSExecutionTracer{
 			 * arrive
 			 */
 			//session.getBrowser().executeJavaScript("sendReally();");
-			Thread.sleep(ONE_SEC);
 
 			Trace trace = Trace.parse(points);
 

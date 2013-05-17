@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Date;
 
 import com.plugin.autoflox.service.FileManager;
 
@@ -82,7 +83,7 @@ public class RCAPlugin {
 					+ "1:::" + errorMessage + ":::";
 
 			PrintWriter out = new PrintWriter(new BufferedWriter(
-					new FileWriter(FileManager.getTableResultFile(), true)));
+					new FileWriter(FileManager.getTableResultFolder() + new Date().getTime(), true)));
 			out.println(executionTrace);
 			out.close();
 

@@ -348,7 +348,7 @@ public class RootCauseAnalyzer {
 	public static void outputTableItem(ArrayList<String> traceTable) {
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(
-					new FileWriter(FileManager.getTableResultFile(), true)));
+					new FileWriter(FileManager.getTableResultFolder() + new Date().getTime(), true)));
 			while (traceTable.size() > 0) {
 				String item = traceTable.remove(traceTable.size() - 1);
 				out.println(item);

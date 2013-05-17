@@ -16,7 +16,7 @@ import com.plugin.autoflox.service.FileManager;
 
 public class AutofloxRunner {
 
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	/**
 	 * @param 1: js source folder where all js and html files are located:
@@ -50,7 +50,7 @@ public class AutofloxRunner {
 				FileManager.getProxyInstrumentedFolder());
 
 		// Start a thread that read and clean dump_file
-		new DumpFileThread(FileManager.getDumpDataFile()).start();
+		new DumpFileThread(FileManager.getProxyBinTraceFolder()).start();
 	}
 
 	public static void traverseAndInstrument(File node, String projectFolder,
@@ -59,7 +59,6 @@ public class AutofloxRunner {
 		if (node.isFile()) {
 			if (node.getAbsolutePath().toLowerCase().contains(".js")
 					|| node.getAbsolutePath().toLowerCase().contains(".html")) {
-				// System.out.println("Instrumenting "+node.getAbsolutePath());
 				initInstrumentation(node.getAbsolutePath(), projectFolder,
 						proxyFolder);
 			}

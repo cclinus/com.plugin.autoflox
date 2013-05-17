@@ -15,8 +15,8 @@ public class DumpFileThread extends Thread {
 	private DumpFileReader dReader;
 	private int stateCounter = 0;
 
-	public DumpFileThread(String dumpFilePath) {
-		DumpFileReader dReader = new DumpFileReader(dumpFilePath);
+	public DumpFileThread(String binTraceFolder) {
+		DumpFileReader dReader = new DumpFileReader(binTraceFolder);
 		this.dReader = dReader;
 	}
 
@@ -25,19 +25,12 @@ public class DumpFileThread extends Thread {
 		// constructed.
 		int errorIdCounter = 0;
 		while (true) {
-			// System.out.println("Reading dumpData");
 			try {
 
 				// Read from dump file to point array
 				String dumpData = dReader.readDumpFile();
 				if (dumpData != null) {
 					JSExecutionTracer.addPoint(dumpData);
-
-					System.out.println("Trace point array size:"
-							+ JSExecutionTracer.points.length());
-
-					// Clean dump file
-					dReader.cleanDumpFile();
 
 					// Check if ERROR occurs
 					if (dumpData.contains(":::ERROR")) {
