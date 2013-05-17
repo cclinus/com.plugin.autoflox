@@ -1,15 +1,18 @@
 package com.plugin.autoflox.action;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.ProcessBuilder.Redirect;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import com.plugin.autoflox.service.ProcessManager;
 import com.plugin.autoflox.service.FileManager;
+import com.plugin.autoflox.service.ProcessManager;
 import com.plugin.autoflox.views.AutofloxView;
 import com.plugin.autoflox.views.AutofloxViewUpdateThread;
 
@@ -68,18 +71,18 @@ public class AutofloxRunAction implements IWorkbenchWindowActionDelegate {
 				try {
 					// Start autoflox process
 					FileManager.initFolderStruc();
-					String runCmd = "java -jar " + FileManager.getSbinFolder()
-							+ "autoflox-cmd.jar "
-							+ FileManager.getProjectFolder() + " "
-							+ FileManager.getProxyFolder();
-					System.out.println("Run Cmd: " + runCmd);
-					ProcessManager.autofloxProcess = Runtime.getRuntime().exec(
-							runCmd);
+					ProcessBuilder pAutoflox = new ProcessBuilder("java", "-jar", FileManager.getSbinFolder()+"autoflox-cmd.jar", FileManager.getProjectFolder(), FileManager.getProxyFolder());
+					pAutoflox.redirectOutput(Redirect.INHERIT);
+					pAutoflox.redirectError(Redirect.INHERIT);
+					Process autoFloxProcess = pAutoflox.start();
+					ProcessManager.autofloxProcess = autoFloxProcess;
 
 					// Launch Firefox process, assuming in Linux and firefox
 					// installed
-					String ffCmd = "firefox -no-remote -url http://localhost/autoflox_proxy/instrumented/";
-					Runtime.getRuntime().exec(ffCmd);
+					ProcessBuilder pFirefox = new ProcessBuilder("firefox", "-no-remote", "-url", "http://localhost/autoflox_proxy/instrumented/");
+					pFirefox.redirectOutput(Redirect.INHERIT);
+					pFirefox.redirectError(Redirect.INHERIT);
+					Process firefoxProcess = pFirefox.start();
 
 				} catch (IOException e) {
 					e.printStackTrace();
